@@ -7,6 +7,7 @@ import { AnalyticsPanel } from './components/AnalyticsPanel';
 import { OceanHeatmap } from './components/OceanHeatmap';
 import { VisualizationDashboard } from './components/VisualizationDashboard';
 import { CorrelationDashboard } from './components/CorrelationDashboard';
+import { TemporalExplorer } from './components/TemporalExplorer';
 import type { OceanLocation, PredictionResponse, SurfaceParameters } from './types';
 import { predictSubsurfaceTemperature, getSurfaceObservations } from './services/predictionService';
 
@@ -27,7 +28,7 @@ function App() {
     
     if (selectedLocation) {
       setPredictionData(null); 
-      getSurfaceObservations(selectedLocation.lat, selectedLocation.lng).then(data => {
+      getSurfaceObservations(selectedLocation.lat, selectedLocation.lng, selectedDate).then(data => {
         if (isMounted) setSurfaceParameters(data);
       });
     } else {
@@ -77,6 +78,12 @@ function App() {
     setSelectedLocation(location);
   };
 
+  const handleApplyTemporalMatch = (loc: OceanLocation, dateIso: string) => {
+    setSelectedLocation(loc);
+    setSelectedDate(dateIso.includes('T') ? dateIso : `${dateIso}T00:00:00.000Z`);
+    setActiveTab('Prediction');
+  };
+
   return (
     <div className="min-h-screen bg-[#ffffff] flex flex-col font-sans text-slate-900">
       <Header activeTab={activeTab} onTabChange={setActiveTab} />
@@ -86,94 +93,99 @@ function App() {
         {activeTab === 'Prediction' && (
           <>
             {/* Main 3-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)_320px] xl:grid-cols-[320px_minmax(0,1fr)_340px] 2xl:grid-cols-[360px_minmax(0,1fr)_380px] gap-6 mb-16 items-stretch">
-          
-          {/* Left Sidebar (Date, Location, Surface Obs) */}
-          <div>
-            <LeftSidebar 
-              selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
-              location={selectedLocation}
-              parameters={surfaceParameters}
-              onResetSelection={handleReset}
-              error={locationError}
-            />
-          </div>
-
-          {/* Center Map */}
-          <div className="min-w-0 relative h-[640px] sm:h-[740px] xl:h-[820px] 2xl:h-[880px] flex flex-col">
-            {mapMode === '3D' ? (
-              <OceanMap 
-                selectedLocation={selectedLocation} 
-                onLocationSelect={handleLocationSelect}
-              />
-            ) : (
-              <div className="h-full w-full rounded-xl overflow-hidden border border-slate-300 shadow-sm relative">
-                <OceanHeatmap
-                  location={selectedLocation}
-                  parameters={surfaceParameters}
+            <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)_320px] xl:grid-cols-[320px_minmax(0,1fr)_340px] 2xl:grid-cols-[360px_minmax(0,1fr)_380px] gap-6 mb-16 items-stretch">
+              
+              {/* Left Sidebar (Date, Location, Surface Obs) */}
+              <div>
+                <LeftSidebar 
                   selectedDate={selectedDate}
                   onDateChange={setSelectedDate}
-                  onLocationSelect={handleLocationSelect}
+                  location={selectedLocation}
+                  parameters={surfaceParameters}
+                  onResetSelection={handleReset}
+                  error={locationError}
                 />
               </div>
-            )}
-            
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-slate-200 p-1">
-              <button
-                onClick={() => setMapMode('2D')}
-                className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
-                  mapMode === '2D' ? 'bg-cyan-600 text-white shadow' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                2D Map
-              </button>
-              <button
-                onClick={() => setMapMode('3D')}
-                className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
-                  mapMode === '3D' ? 'bg-cyan-600 text-white shadow' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                3D Globe
-              </button>
-            </div>
-          </div>
 
-          {/* Right Sidebar (Prediction workflow) */}
-          <div>
-            <PredictionSidebar 
-              canPredict={!!selectedLocation && !!surfaceParameters}
-              isPredicting={isPredicting}
-              predictionData={predictionData}
-              onRunPrediction={handleRunPrediction}
-              error={predictionError}
-            />
-          </div>
-
-        </div>
-
-
-
-        {/* Analytics Section - Only show if prediction is ready */}
-        <div className="max-w-[1480px] mx-auto">
-          {predictionData ? (
-            <div className="w-full border-t border-slate-200 pt-12 mt-8">
-              <p className="text-[11px] font-bold text-ocean-700 tracking-[0.14em] text-center uppercase mb-2">Scientific outputs</p>
-              <h2 className="text-2xl font-semibold text-slate-900 tracking-tight mb-8 text-center">Analysis &amp; Visualization</h2>
-              <AnalyticsPanel predictionData={predictionData} />
-            </div>
-          ) : (
-            <div className="w-full mt-12 mb-20 text-center">
-              <div className="inline-block p-8 border border-slate-200 bg-slate-50 max-w-lg mx-auto">
-                <h3 className="text-sm font-bold text-slate-800 mb-2 uppercase tracking-wide">Analysis available after prediction</h3>
-                <p className="text-slate-500 text-xs">
-                  Run a prediction model first to generate the subsurface temperature profile and correlation visualizations.
-                </p>
+              {/* Center Map */}
+              <div className="min-w-0 relative h-[640px] sm:h-[740px] xl:h-[820px] 2xl:h-[880px] flex flex-col">
+                {mapMode === '3D' ? (
+                  <OceanMap 
+                    selectedLocation={selectedLocation} 
+                    onLocationSelect={handleLocationSelect}
+                  />
+                ) : (
+                  <div className="h-full w-full rounded-xl overflow-hidden border border-slate-300 shadow-sm relative">
+                    <OceanHeatmap
+                      location={selectedLocation}
+                      parameters={surfaceParameters}
+                      selectedDate={selectedDate}
+                      onDateChange={setSelectedDate}
+                      onLocationSelect={handleLocationSelect}
+                    />
+                  </div>
+                )}
+                
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-slate-200 p-1">
+                  <button
+                    onClick={() => setMapMode('2D')}
+                    className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
+                      mapMode === '2D' ? 'bg-cyan-600 text-white shadow' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    2D Map
+                  </button>
+                  <button
+                    onClick={() => setMapMode('3D')}
+                    className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
+                      mapMode === '3D' ? 'bg-cyan-600 text-white shadow' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    3D Globe
+                  </button>
+                </div>
               </div>
+
+              {/* Right Sidebar (Prediction workflow) */}
+              <div>
+                <PredictionSidebar 
+                  canPredict={!!selectedLocation && !!surfaceParameters}
+                  isPredicting={isPredicting}
+                  predictionData={predictionData}
+                  onRunPrediction={handleRunPrediction}
+                  error={predictionError}
+                />
+              </div>
+
             </div>
-          )}
-        </div>
+
+            {/* Analytics Section - Only show if prediction is ready */}
+            <div className="max-w-[1480px] mx-auto">
+              {predictionData ? (
+                <div className="w-full border-t border-slate-200 pt-12 mt-8">
+                  <p className="text-[11px] font-bold text-ocean-700 tracking-[0.14em] text-center uppercase mb-2">Scientific outputs</p>
+                  <h2 className="text-2xl font-semibold text-slate-900 tracking-tight mb-8 text-center">Analysis &amp; Visualization</h2>
+                  <AnalyticsPanel predictionData={predictionData} />
+                </div>
+              ) : (
+                <div className="w-full mt-12 mb-20 text-center">
+                  <div className="inline-block p-8 border border-slate-200 bg-slate-50 max-w-lg mx-auto">
+                    <h3 className="text-sm font-bold text-slate-800 mb-2 uppercase tracking-wide">Analysis available after prediction</h3>
+                    <p className="text-slate-500 text-xs">
+                      Run a prediction model first to generate the subsurface temperature profile and correlation visualizations.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
           </>
+        )}
+
+        {activeTab === 'TemporalExplorer' && (
+          <TemporalExplorer
+            initialLocation={selectedLocation}
+            onApplyLocationAndDate={handleApplyTemporalMatch}
+          />
         )}
 
         {activeTab === 'Visualization' && (

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Waves, BarChart3, LineChart, Network, Menu, ChevronRight } from 'lucide-react';
+import { Waves, BarChart3, LineChart, Network, Menu, ChevronRight, CalendarRange } from 'lucide-react';
 
-export type TabType = 'Prediction' | 'Visualization' | 'Correlation';
+export type TabType = 'Prediction' | 'Visualization' | 'Correlation' | 'TemporalExplorer';
 
 interface HeaderProps {
   activeTab?: TabType;
@@ -24,6 +24,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab = 'Prediction', onTabC
 
   const tabs: { id: TabType; label: string; icon: React.ReactNode; desc: string }[] = [
     { id: 'Prediction', label: 'Dashboard & Control', icon: <BarChart3 className="w-4 h-4" />, desc: 'Main prediction interface' },
+    { id: 'TemporalExplorer', label: 'Spatiotemporal Explorer', icon: <CalendarRange className="w-4 h-4" />, desc: 'Date span averages & condition matcher' },
     { id: 'Visualization', label: '3D Profiler', icon: <LineChart className="w-4 h-4" />, desc: 'Layer-by-layer 3D grid' },
     { id: 'Correlation', label: 'Analytics', icon: <Network className="w-4 h-4" />, desc: 'Data correlation plots' },
   ];
@@ -39,6 +40,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab = 'Prediction', onTabC
             <button 
               onClick={() => setMenuOpen(!menuOpen)}
               className="p-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg transition-colors border border-slate-700 focus:outline-none"
+              title="Open Navigation Menu"
             >
               <Menu className="w-6 h-6" />
             </button>
