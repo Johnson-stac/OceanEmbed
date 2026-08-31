@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { oceanAnalystPlugin } from './server/apiPlugin.ts'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,6 +15,7 @@ export default defineConfig({
         },
       ],
     }),
+    oceanAnalystPlugin(),
   ],
   define: {
     CESIUM_BASE_URL: JSON.stringify('/cesium'),

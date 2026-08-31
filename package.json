@@ -12,6 +12,7 @@
   "dependencies": {
     "cesium": "^1.140.0",
     "framer-motion": "^13.1.1",
+    "groq-sdk": "^1.6.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.37.0",
     "plotly.js-dist-min": "^4.0.0",
@@ -19,6 +20,7 @@
     "react-dom": "^19.2.8",
     "react-leaflet": "^5.0.0",
     "react-plotly.js": "^4.1.0",
+    "react-router-dom": "^7.18.3",
     "recharts": "^3.10.1",
     "vite-plugin-static-copy": "^3.4.0"
   },

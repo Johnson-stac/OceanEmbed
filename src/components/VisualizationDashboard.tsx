@@ -73,7 +73,7 @@ export const VisualizationDashboard: React.FC<VisualizationDashboardProps> = ({ 
   }
 
   return (
-    <div className="flex-1 flex flex-col h-[calc(100vh-140px)] w-full">
+    <div className="flex-1 flex flex-col w-full pb-12">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
@@ -90,43 +90,43 @@ export const VisualizationDashboard: React.FC<VisualizationDashboardProps> = ({ 
         </div>
       </div>
 
-      <div className="flex-1 bg-[#0f172a] rounded-2xl shadow-xl border border-slate-800 overflow-hidden relative">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative mb-8" style={{ height: '700px' }}>
         {gridData ? (
           <Plot
             data={gridData}
             layout={{
               autosize: true,
-              margin: { l: 0, r: 0, b: 0, t: 0 },
-              paper_bgcolor: 'transparent',
-              plot_bgcolor: 'transparent',
-              font: { color: '#94a3b8' },
+              margin: { l: 20, r: 20, b: 20, t: 40 },
+              paper_bgcolor: '#ffffff',
+              plot_bgcolor: '#ffffff',
+              font: { color: '#334155' },
               scene: {
                 aspectmode: 'manual',
-                aspectratio: { x: 1.2, y: 1.2, z: 0.8 },
+                aspectratio: { x: 1.5, y: 1.5, z: 1.2 }, // Spread it out more
                 camera: {
-                  eye: { x: -1.5, y: -1.5, z: 0.5 },
-                  center: { x: 0, y: 0, z: -0.2 }
+                  eye: { x: -1.2, y: -1.2, z: 0.4 }, // Move camera closer
+                  center: { x: 0, y: 0, z: -0.1 }
                 },
                 xaxis: { 
                   title: 'Longitude', 
-                  gridcolor: '#334155',
-                  zerolinecolor: '#475569',
-                  tickfont: { color: '#94a3b8' },
-                  titlefont: { color: '#cbd5e1' }
+                  gridcolor: '#e2e8f0',
+                  zerolinecolor: '#cbd5e1',
+                  tickfont: { color: '#64748b' },
+                  titlefont: { color: '#334155', size: 14 }
                 },
                 yaxis: { 
                   title: 'Latitude',
-                  gridcolor: '#334155',
-                  zerolinecolor: '#475569',
-                  tickfont: { color: '#94a3b8' },
-                  titlefont: { color: '#cbd5e1' }
+                  gridcolor: '#e2e8f0',
+                  zerolinecolor: '#cbd5e1',
+                  tickfont: { color: '#64748b' },
+                  titlefont: { color: '#334155', size: 14 }
                 },
                 zaxis: { 
                   title: 'Depth (m)',
-                  gridcolor: '#334155',
-                  zerolinecolor: '#475569',
-                  tickfont: { color: '#94a3b8' },
-                  titlefont: { color: '#cbd5e1' },
+                  gridcolor: '#e2e8f0',
+                  zerolinecolor: '#cbd5e1',
+                  tickfont: { color: '#64748b' },
+                  titlefont: { color: '#334155', size: 14 },
                   tickmode: 'array',
                   tickvals: Array.from({ length: 15 }, (_, i) => i),
                   ticktext: ['0m', '5m', '10m', '20m', '30m', '50m', '75m', '100m', '125m', '150m', '200m', '300m', '500m', '700m', '1000m'],
@@ -140,9 +140,60 @@ export const VisualizationDashboard: React.FC<VisualizationDashboardProps> = ({ 
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600"></div>
           </div>
         )}
+      </div>
+
+      {/* Depth Information Section */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+        <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Ocean Depth Zones & Marine Environments</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <div className="bg-sky-50 rounded-xl p-6 border border-sky-100 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-sky-200 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+            <h4 className="text-lg font-bold text-sky-900 relative z-10">Epipelagic Zone</h4>
+            <div className="inline-block bg-sky-200 text-sky-800 text-[10px] font-bold px-2 py-0.5 rounded mt-1 mb-3 uppercase tracking-wider relative z-10">Sunlight Zone (0m - 200m)</div>
+            <p className="text-sm text-sky-800/80 mb-4 relative z-10">
+              The illuminated surface zone where enough light penetrates for photosynthesis. This layer hosts the vast majority of commercial fisheries and marine life.
+            </p>
+            <ul className="text-xs text-sky-800 space-y-2 relative z-10 font-medium">
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Phytoplankton & Zooplankton</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Tuna, Marlin, Mackerel</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Sea Turtles & Dolphins</li>
+            </ul>
+          </div>
+
+          <div className="bg-blue-50 rounded-xl p-6 border border-blue-100 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-200 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+            <h4 className="text-lg font-bold text-blue-900 relative z-10">Mesopelagic Zone</h4>
+            <div className="inline-block bg-blue-200 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded mt-1 mb-3 uppercase tracking-wider relative z-10">Twilight Zone (200m - 1000m)</div>
+            <p className="text-sm text-blue-800/80 mb-4 relative z-10">
+              A dim zone where light rapidly fades. Rapid temperature drops occur here (the thermocline). Many species here migrate to the surface at night to feed.
+            </p>
+            <ul className="text-xs text-blue-800 space-y-2 relative z-10 font-medium">
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Lanternfish (Myctophids)</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Swordfish & Bigeye Tuna</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Giant Squid & Cuttlefish</li>
+            </ul>
+          </div>
+
+          <div className="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-slate-200 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+            <h4 className="text-lg font-bold text-slate-900 relative z-10">Bathypelagic Zone</h4>
+            <div className="inline-block bg-slate-200 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded mt-1 mb-3 uppercase tracking-wider relative z-10">Midnight Zone (1000m+)</div>
+            <p className="text-sm text-slate-600 mb-4 relative z-10">
+              Complete darkness except for bioluminescence. The water here is near freezing and under immense pressure. Life is sparse but highly adapted.
+            </p>
+            <ul className="text-xs text-slate-700 space-y-2 relative z-10 font-medium">
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Anglerfish & Bristlemouths</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Vampire Squid</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Deep-sea Sponges</li>
+            </ul>
+          </div>
+
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Waves, BarChart3, LineChart, Network, Menu, ChevronRight, CalendarRange } from 'lucide-react';
 
 export type TabType = 'Prediction' | 'Visualization' | 'Correlation' | 'TemporalExplorer';
@@ -11,6 +12,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ activeTab = 'Prediction', onTabChange }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -35,15 +37,16 @@ export const Header: React.FC<HeaderProps> = ({ activeTab = 'Prediction', onTabC
         
         {/* Left: Logo & Branding */}
         <div className="flex items-center space-x-5">
-          {/* Dropdown Menu */}
-          <div className="relative z-[9999]" ref={menuRef}>
-            <button 
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="p-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg transition-colors border border-slate-700 focus:outline-none"
-              title="Open Navigation Menu"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
+          {/* Dropdown Menu - only on Prediction Page */}
+          {location.pathname === '/' && (
+            <div className="relative z-[9999]" ref={menuRef}>
+              <button 
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="p-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg transition-colors border border-slate-700 focus:outline-none"
+                title="Open Navigation Menu"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
 
             {menuOpen && (
               <div className="absolute top-full left-0 mt-2 w-72 bg-slate-800/95 backdrop-blur-xl border border-slate-700/50 rounded-xl shadow-2xl overflow-hidden py-2">
@@ -83,6 +86,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab = 'Prediction', onTabC
               </div>
             )}
           </div>
+          )}
 
           <div className="text-cyan-400 bg-slate-800/50 p-2 rounded-lg border border-slate-700/50">
             <Waves className="h-8 w-8 stroke-[1.5]" />
@@ -98,8 +102,21 @@ export const Header: React.FC<HeaderProps> = ({ activeTab = 'Prediction', onTabC
           </div>
         </div>
         
-        {/* Center: Empty to maintain balance */}
-        <div className="flex-1 flex justify-center"></div>
+        {/* Center: Main Navigation */}
+        <div className="flex-1 hidden lg:flex justify-center items-center space-x-8">
+          <Link 
+            to="/" 
+            className={`text-sm font-semibold transition-colors ${location.pathname === '/' ? 'text-cyan-400' : 'text-slate-400 hover:text-white'}`}
+          >
+            Home
+          </Link>
+          <Link 
+            to="/fisheries" 
+            className={`text-sm font-semibold transition-colors ${location.pathname === '/fisheries' ? 'text-cyan-400' : 'text-slate-400 hover:text-white'}`}
+          >
+            Fisheries
+          </Link>
+        </div>
 
         {/* Right: Event Info */}
         <div className="hidden md:flex flex-col items-end text-right w-[320px]">

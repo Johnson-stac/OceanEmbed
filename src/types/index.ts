@@ -147,3 +147,17 @@ export interface AdvancedFilterResult {
     matchCount: number;
   }[];
 }
+
+// Chatbot Types
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatContext {
+  date: string;
+  location: OceanLocation;
+  surfaceParameters: SurfaceParameters;
+  predictions: DepthPrediction[];
+}
