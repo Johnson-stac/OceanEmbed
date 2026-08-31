@@ -188,7 +188,7 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
   };
 
   // Run Basic Filter analysis
-  const runDateRangeQuery = async () => {
+  const runDateRangeQuery = React.useCallback(async () => {
     if (!location) return;
     setIsLoadingRange(true);
     try {
@@ -199,10 +199,10 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
     } finally {
       setIsLoadingRange(false);
     }
-  };
+  }, [location, startDate, endDate]);
 
   // Run Advance Filter condition matching
-  const runConditionMatcher = async () => {
+  const runConditionMatcher = React.useCallback(async () => {
     if (!location) return;
     setIsLoadingAdvance(true);
     try {
@@ -213,7 +213,7 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
     } finally {
       setIsLoadingAdvance(false);
     }
-  };
+  }, [location, criteria]);
 
   // Auto-run on location or mode change
   useEffect(() => {
@@ -222,7 +222,7 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
     } else {
       runConditionMatcher();
     }
-  }, [location, filterMode]);
+  }, [filterMode, runDateRangeQuery, runConditionMatcher]);
 
   // Handle Preset Condition Scenario selection
   const applyConditionPreset = (presetCriteria: Partial<AdvancedFilterCriteria>) => {
