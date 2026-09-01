@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Plot from 'react-plotly.js';
 import { Layers, Info } from 'lucide-react';
 import type { OceanLocation, SurfaceParameters, PredictionResponse } from '../types';
+import { getDepthTemperature } from '../services/fakeModel';
 
 interface VisualizationDashboardProps {
   location: OceanLocation | null;
@@ -10,34 +11,39 @@ interface VisualizationDashboardProps {
 }
 
 export const VisualizationDashboard: React.FC<VisualizationDashboardProps> = ({ location, surfaceParameters, predictionData }) => {
-  // Generate a mock 0.25d grid around the selected point for the 3D surfaces
+  const depths = [0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000];
+  const [selectedLayerIdx, setSelectedLayerIdx] = useState<number | null>(null);
+
+  // Generate a smooth grid around the selected point for the 3D surfaces
   const gridData = useMemo(() => {
     if (!location || !surfaceParameters) return null;
 
-    const gridSize = 10;
-    const gridStep = 0.25;
-    const depths = [0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000];
+    const gridSize = 35;
+    const gridStep = 0.07;
     
     // Create grid coordinates
     const x = Array.from({ length: gridSize }, (_, i) => location.lng + (i - gridSize/2) * gridStep);
     const y = Array.from({ length: gridSize }, (_, i) => location.lat + (i - gridSize/2) * gridStep);
 
+    const minTemp = 4;
+    const maxTemp = Math.ceil(surfaceParameters.sst + 1);
+
     // Create surface traces for each depth
     const traces: any[] = depths.map((depth, depthIdx) => {
       // Base temp for this depth
       let baseTemp = surfaceParameters.sst;
-      if (predictionData && predictionData.predictions.length > depthIdx) {
-        baseTemp = predictionData.predictions[Math.min(depthIdx * 2, predictionData.predictions.length - 1)].predicted_temperature;
+      if (predictionData && predictionData.predictions && predictionData.predictions[depthIdx]) {
+        baseTemp = predictionData.predictions[depthIdx].predicted_temperature;
       } else {
-        baseTemp -= depth * 0.03; // Mock cooling if no prediction
+        baseTemp = getDepthTemperature(surfaceParameters.sst, depth);
       }
 
-      // Generate z matrix (temperature values with some procedural noise for realism)
+      // Generate z matrix (temperature values with smooth procedural noise for realistic ocean gradients)
       const z = y.map(lat => 
         x.map(lng => {
           const dist = Math.sqrt(Math.pow(lat - location.lat, 2) + Math.pow(lng - location.lng, 2));
-          const noise = Math.sin(lat * 10) * Math.cos(lng * 10) * 0.5;
-          return baseTemp - dist * 2 + noise;
+          const noise = Math.sin(lat * 6) * Math.cos(lng * 6) * 0.4 + Math.sin(lat * 14 + lng * 14) * 0.15;
+          return baseTemp - dist * 0.5 + noise;
         })
       );
 
@@ -59,6 +65,24 @@ export const VisualizationDashboard: React.FC<VisualizationDashboardProps> = ({ 
 
     return traces;
   }, [location, surfaceParameters, predictionData]);
+
+  const selectedLayerData = useMemo(() => {
+    if (selectedLayerIdx === null || !gridData) return null;
+    const trace3D = gridData[selectedLayerIdx];
+    if (!trace3D) return null;
+    
+    return [{
+      type: 'heatmap' as const,
+      x: trace3D.x,
+      y: trace3D.y,
+      z: trace3D.surfacecolor,
+      colorscale: 'Jet',
+      zauto: true,
+      zsmooth: 'best' as const,
+      colorbar: { title: 'Temp (°C)', thickness: 15 },
+      hovertemplate: `Temp: %{z:.2f}°C<br>Lat: %{y:.2f}<br>Lng: %{x:.2f}<extra></extra>`
+    }];
+  }, [selectedLayerIdx, gridData]);
 
   if (!location) {
     return (
@@ -90,59 +114,92 @@ export const VisualizationDashboard: React.FC<VisualizationDashboardProps> = ({ 
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative mb-8" style={{ height: '700px' }}>
-        {gridData ? (
-          <Plot
-            data={gridData}
-            layout={{
-              autosize: true,
-              margin: { l: 20, r: 20, b: 20, t: 40 },
-              paper_bgcolor: '#ffffff',
-              plot_bgcolor: '#ffffff',
-              font: { color: '#334155' },
-              scene: {
-                aspectmode: 'manual',
-                aspectratio: { x: 1.5, y: 1.5, z: 1.2 }, // Spread it out more
-                camera: {
-                  eye: { x: -1.2, y: -1.2, z: 0.4 }, // Move camera closer
-                  center: { x: 0, y: 0, z: -0.1 }
-                },
-                xaxis: { 
-                  title: 'Longitude', 
-                  gridcolor: '#e2e8f0',
-                  zerolinecolor: '#cbd5e1',
-                  tickfont: { color: '#64748b' },
-                  titlefont: { color: '#334155', size: 14 }
-                },
-                yaxis: { 
-                  title: 'Latitude',
-                  gridcolor: '#e2e8f0',
-                  zerolinecolor: '#cbd5e1',
-                  tickfont: { color: '#64748b' },
-                  titlefont: { color: '#334155', size: 14 }
-                },
-                zaxis: { 
-                  title: 'Depth (m)',
-                  gridcolor: '#e2e8f0',
-                  zerolinecolor: '#cbd5e1',
-                  tickfont: { color: '#64748b' },
-                  titlefont: { color: '#334155', size: 14 },
-                  tickmode: 'array',
-                  tickvals: Array.from({ length: 15 }, (_, i) => i),
-                  ticktext: ['0m', '5m', '10m', '20m', '30m', '50m', '75m', '100m', '125m', '150m', '200m', '300m', '500m', '700m', '1000m'],
-                  autorange: 'reversed' // So index 0 (surface) is at top
-                }
-              }
-            }}
-            useResizeHandler={true}
-            style={{ width: '100%', height: '100%' }}
-            config={{ displayModeBar: false, responsive: true }}
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600"></div>
+      <div className="flex flex-col lg:flex-row gap-6 mb-8 h-[700px]">
+        {/* Left Side: 3D Layers */}
+        <div className="flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
+          <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 shadow-sm border border-slate-200">
+            3D Overview (Click a layer)
           </div>
-        )}
+          {gridData ? (
+            <Plot
+              data={gridData}
+              layout={{
+                autosize: true,
+                margin: { l: 20, r: 20, b: 20, t: 40 },
+                paper_bgcolor: '#ffffff',
+                plot_bgcolor: '#ffffff',
+                font: { color: '#334155' },
+                scene: {
+                  aspectmode: 'manual',
+                  aspectratio: { x: 1.5, y: 1.5, z: 1.2 },
+                  camera: {
+                    eye: { x: -1.2, y: -1.2, z: 0.4 },
+                    center: { x: 0, y: 0, z: -0.1 }
+                  },
+                  xaxis: { title: 'Longitude', gridcolor: '#e2e8f0', zerolinecolor: '#cbd5e1', tickfont: { color: '#64748b' }, titlefont: { color: '#334155', size: 12 } },
+                  yaxis: { title: 'Latitude', gridcolor: '#e2e8f0', zerolinecolor: '#cbd5e1', tickfont: { color: '#64748b' }, titlefont: { color: '#334155', size: 12 } },
+                  zaxis: { 
+                    title: 'Depth (m)', gridcolor: '#e2e8f0', zerolinecolor: '#cbd5e1', tickfont: { color: '#64748b' }, titlefont: { color: '#334155', size: 12 },
+                    tickmode: 'array',
+                    tickvals: Array.from({ length: 15 }, (_, i) => i),
+                    ticktext: ['0m', '5m', '10m', '20m', '30m', '50m', '75m', '100m', '125m', '150m', '200m', '300m', '500m', '700m', '1000m'],
+                    autorange: 'reversed'
+                  }
+                }
+              }}
+              useResizeHandler={true}
+              style={{ width: '100%', height: '100%' }}
+              config={{ displayModeBar: false, responsive: true }}
+              onClick={(e) => {
+                if (e.points && e.points.length > 0) {
+                  setSelectedLayerIdx(e.points[0].curveNumber);
+                }
+              }}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600"></div>
+            </div>
+          )}
+        </div>
+
+        {/* Right Side: 2D Inspection */}
+        <div className="flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative flex flex-col">
+          <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 shadow-sm border border-slate-200">
+            2D Layer Inspection
+          </div>
+          {selectedLayerIdx !== null && selectedLayerData ? (
+            <>
+              <div className="absolute top-4 right-4 z-10 bg-cyan-50 border border-cyan-200 text-cyan-800 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm">
+                Depth: {depths[selectedLayerIdx]}m
+              </div>
+              <div className="flex-1 mt-12 relative">
+                <Plot
+                  data={selectedLayerData}
+                  layout={{
+                    autosize: true,
+                    margin: { l: 50, r: 20, b: 50, t: 20 },
+                    paper_bgcolor: '#ffffff',
+                    plot_bgcolor: '#ffffff',
+                    xaxis: { title: 'Longitude' },
+                    yaxis: { title: 'Latitude' }
+                  }}
+                  useResizeHandler={true}
+                  style={{ width: '100%', height: '100%', minHeight: '500px' }}
+                  config={{ displayModeBar: false, responsive: true }}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center bg-slate-50 p-8">
+              <div className="text-center">
+                <Layers className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-sm font-semibold text-slate-700">No Layer Selected</h3>
+                <p className="text-xs text-slate-500 mt-2">Click on any depth layer in the 3D plot to inspect it in 2D.</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Depth Information Section */}

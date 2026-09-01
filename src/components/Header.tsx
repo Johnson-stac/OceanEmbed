@@ -95,7 +95,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab = 'Prediction', onTabC
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold tracking-tight leading-none text-white">OceanEmbed</h1>
               <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-300 bg-slate-800 px-2 py-1 rounded border border-slate-700 uppercase tracking-wider">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span> Demo
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span> Live
               </span>
             </div>
             <p className="text-[10px] text-slate-400 mt-1.5 uppercase tracking-[0.15em] font-semibold">Subsurface Intelligence</p>

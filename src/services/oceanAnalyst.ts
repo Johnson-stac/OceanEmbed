@@ -71,7 +71,7 @@ export class MockOceanAnalyst implements OceanAnalyst {
       return `Generally, the warmest water is near the surface, and it cools significantly at depth, often showing a sharp thermocline.`;
     }
 
-    return "I am the Demo Ocean Analyst. In a real environment, I would provide a detailed scientific interpretation of that question based on the prediction data. Since the AI service is currently unavailable, this is a mock response.";
+    return "I am the Ocean Analyst. In a real environment, I would provide a detailed scientific interpretation of that question based on the prediction data. Since the AI service is currently unavailable, this is a mock response.";
   }
 }
 

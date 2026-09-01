@@ -4,6 +4,8 @@ import 'leaflet/dist/leaflet.css';
 import { CalendarDays, Layers3, Activity } from 'lucide-react';
 import type { OceanLocation, SurfaceParameters } from '../types';
 
+import { getDepthTemperature } from '../services/fakeModel';
+
 interface OceanHeatmapProps {
   location: OceanLocation | null;
   parameters: SurfaceParameters | null;
@@ -86,9 +88,7 @@ export const OceanHeatmap: React.FC<OceanHeatmapProps> = ({ location, parameters
       for (let d = 0; d < DEPTHS.length; d++) {
         const depth = DEPTHS[d];
         const seasonalCycle = Math.sin(((monthIdx % 12) / 12) * Math.PI * 2 - 0.7) * 1.45;
-        const depthCooling = depth <= 30 ? depth * 0.055 : depth <= 200 ? 1.65 + (depth - 30) * 0.05 : 10.15 + (depth - 200) * 0.012;
-        // Approximation of temperature for the plot
-        const temp = parameters.sst + seasonalCycle - depthCooling;
+        const temp = getDepthTemperature(parameters.sst, depth) + seasonalCycle;
         col.push({ temp, depth, monthIdx });
       }
       grid.push(col);
@@ -101,8 +101,7 @@ export const OceanHeatmap: React.FC<OceanHeatmapProps> = ({ location, parameters
     if (!parameters) return 0;
     const depth = DEPTHS[selectedDepth];
     const seasonalCycle = Math.sin(((selectedMonth % 12) / 12) * Math.PI * 2 - 0.7) * 1.45;
-    const depthCooling = depth <= 30 ? depth * 0.055 : depth <= 200 ? 1.65 + (depth - 30) * 0.05 : 10.15 + (depth - 200) * 0.012;
-    return parameters.sst + seasonalCycle - depthCooling;
+    return getDepthTemperature(parameters.sst, depth) + seasonalCycle;
   }, [parameters, selectedDepth, selectedMonth]);
 
   return (

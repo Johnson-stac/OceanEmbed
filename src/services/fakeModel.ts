@@ -112,36 +112,54 @@ export const generateMockSurfaceParameters = (
   };
 };
 
+export const getDepthTemperature = (sst: number, depth: number): number => {
+  if (depth <= 0) return sst;
+  let drop = 0;
+  if (depth <= 5) {
+    drop = 0.1 * (depth / 5);
+  } else if (depth <= 10) {
+    drop = 0.1 + 0.2 * ((depth - 5) / 5);
+  } else if (depth <= 20) {
+    drop = 0.3 + 0.2 * ((depth - 10) / 10);
+  } else if (depth <= 30) {
+    drop = 0.5 + 0.2 * ((depth - 20) / 10);
+  } else if (depth <= 50) {
+    drop = 0.7 + 0.6 * ((depth - 30) / 20);
+  } else if (depth <= 75) {
+    drop = 1.3 + 0.7 * ((depth - 50) / 25);
+  } else if (depth <= 100) {
+    drop = 2.0 + 1.0 * ((depth - 75) / 25);
+  } else if (depth <= 125) {
+    drop = 3.0 + 6.2 * ((depth - 100) / 25); // Thermocline rapid transition
+  } else if (depth <= 150) {
+    drop = 9.2 + 2.7 * ((depth - 125) / 25);
+  } else if (depth <= 200) {
+    drop = 11.9 + 1.9 * ((depth - 150) / 50);
+  } else if (depth <= 300) {
+    drop = 13.8 + 3.1 * ((depth - 200) / 100);
+  } else if (depth <= 500) {
+    drop = 16.9 + 2.0 * ((depth - 300) / 200);
+  } else if (depth <= 700) {
+    drop = 18.9 + 0.8 * ((depth - 500) / 200);
+  } else {
+    drop = 19.7 + 2.0 * (Math.min(depth, 1000) - 700) / 300;
+  }
+  return Math.max(3.5, sst - drop);
+};
+
 export const generateMockDepthProfile = (surfaceTemp: number): DepthPrediction[] => {
   const depths = [0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000];
-  const predictions: DepthPrediction[] = [];
-  
-  let currentTemp = surfaceTemp;
-
-  depths.forEach((depth, index) => {
-    let drop = 0;
-    if (depth <= 20) {
-      drop = 0.05 + (depth * 0.015);
-    } else if (depth <= 50) {
-      drop = 1.2 + (depth - 20) * 0.12;
-    } else if (depth <= 200) {
-      drop = 2.0 + (depth - 50) * 0.04;
-    } else {
-      drop = 1.2 + (depth - 200) * 0.006;
-    }
-    
-    currentTemp = Math.max(2.8, currentTemp - drop);
+  return depths.map((depth, index) => {
+    const temp = getDepthTemperature(surfaceTemp, depth);
     const uncertainty = 0.15 + (index * 0.12);
 
-    predictions.push({
+    return {
       depth,
-      predicted_temperature: Number(currentTemp.toFixed(2)),
-      lower_bound: Number((currentTemp - uncertainty).toFixed(2)),
-      upper_bound: Number((currentTemp + uncertainty).toFixed(2)),
-    });
+      predicted_temperature: Number(temp.toFixed(2)),
+      lower_bound: Number((temp - uncertainty).toFixed(2)),
+      upper_bound: Number((temp + uncertainty).toFixed(2)),
+    };
   });
-
-  return predictions;
 };
 
 const generateMockCorrelations = (): CorrelationResult[] => {

@@ -268,7 +268,7 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
             }`}
           >
             <Clock className="w-4 h-4" />
-            <span>Basic Filter (Date Range $\rightarrow$ Avg Inputs)</span>
+            <span>Basic Filter</span>
           </button>
 
           <button
@@ -280,7 +280,7 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
-            <span>Advance Filter (Selected Inputs $\rightarrow$ Suggested Dates)</span>
+            <span>Advanced Filter</span>
           </button>
         </div>
       </div>
