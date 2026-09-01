@@ -23,9 +23,6 @@ export const LayeredHeatmapSplit: React.FC<LayeredHeatmapSplitProps> = ({ locati
     const x = Array.from({ length: gridSize }, (_, i) => location.lng + (i - gridSize/2) * gridStep);
     const y = Array.from({ length: gridSize }, (_, i) => location.lat + (i - gridSize/2) * gridStep);
 
-    const minTemp = 4;
-    const maxTemp = Math.ceil(surfaceParameters.sst + 1);
-
     const traces: any[] = depths.map((depth, depthIdx) => {
       let baseTemp = surfaceParameters.sst;
       if (predictionData && predictionData.predictions && predictionData.predictions[depthIdx]) {

@@ -25,9 +25,6 @@ export const VisualizationDashboard: React.FC<VisualizationDashboardProps> = ({ 
     const x = Array.from({ length: gridSize }, (_, i) => location.lng + (i - gridSize/2) * gridStep);
     const y = Array.from({ length: gridSize }, (_, i) => location.lat + (i - gridSize/2) * gridStep);
 
-    const minTemp = 4;
-    const maxTemp = Math.ceil(surfaceParameters.sst + 1);
-
     // Create surface traces for each depth
     const traces: any[] = depths.map((depth, depthIdx) => {
       // Base temp for this depth
