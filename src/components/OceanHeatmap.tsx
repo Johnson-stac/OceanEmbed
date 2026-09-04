@@ -5,6 +5,9 @@ import { CalendarDays, Layers3, Activity } from 'lucide-react';
 import type { OceanLocation, SurfaceParameters } from '../types';
 
 import { getDepthTemperature } from '../services/fakeModel';
+import { DEFAULT_NASA_STATE, type ActiveNasaState } from '../services/nasa/gibsConfig';
+import { NasaTileLayer } from './nasa/NasaTileLayer';
+import { NasaLayerControl } from './nasa/NasaLayerControl';
 
 interface OceanHeatmapProps {
   location: OceanLocation | null;
@@ -75,6 +78,7 @@ const MapEvents: React.FC<{ onLocationSelect?: (loc: OceanLocation) => void }> =
 
 export const OceanHeatmap: React.FC<OceanHeatmapProps> = ({ location, parameters, selectedDate, onDateChange, onLocationSelect }) => {
   const [selectedDepth, setSelectedDepth] = useState(0);
+  const [nasaState, setNasaState] = useState<ActiveNasaState>(DEFAULT_NASA_STATE);
   const selectedMonth = getMonthIndex(selectedDate);
 
   // Generate depth-time plot grid for selected location
@@ -113,6 +117,7 @@ export const OceanHeatmap: React.FC<OceanHeatmapProps> = ({ location, parameters
             attribution='&copy; Esri, GEBCO, NOAA, National Geographic' 
             url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}" 
           />
+          <NasaTileLayer nasaState={nasaState} selectedDate={selectedDate} />
           <StudyRegionFitter />
           <MapEvents onLocationSelect={onLocationSelect} />
           
@@ -130,6 +135,13 @@ export const OceanHeatmap: React.FC<OceanHeatmapProps> = ({ location, parameters
             />
           )}
         </MapContainer>
+
+        <NasaLayerControl
+          nasaState={nasaState}
+          onNasaStateChange={setNasaState}
+          selectedDate={selectedDate}
+          className="absolute top-4 left-4 z-[400] max-w-[270px]"
+        />
       </div>
 
       {/* Bottom Controls & Chart Section */}

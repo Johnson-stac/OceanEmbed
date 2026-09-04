@@ -22,6 +22,9 @@ import {
   Thermometer,
   Activity
 } from 'lucide-react';
+import { DEFAULT_NASA_STATE, type ActiveNasaState } from '../services/nasa/gibsConfig';
+import { NasaTileLayer } from './nasa/NasaTileLayer';
+import { NasaLayerControl } from './nasa/NasaLayerControl';
 import {
   ResponsiveContainer,
   LineChart,
@@ -146,6 +149,9 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
     initialLocation || { lat: 15.0, lng: 88.0, name: 'Bay of Bengal (15.00°N, 88.00°E)' }
   );
   const [locationError, setLocationError] = useState<string | null>(null);
+
+  // --- NASA Satellite State ---
+  const [nasaState, setNasaState] = useState<ActiveNasaState>(DEFAULT_NASA_STATE);
 
   // Mode: 'basic' = Date Range -> Avg Inputs, 'advance' = Selected Inputs -> Suggested Dates
   const [filterMode, setFilterMode] = useState<'basic' | 'advance'>('basic');
@@ -333,6 +339,7 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
               attribution='&copy; Esri, GEBCO, NOAA'
               url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}"
             />
+            <NasaTileLayer nasaState={nasaState} selectedDate={startDate} />
             <StudyRegionFitter />
             <MapEvents onLocationSelect={handleSelectLocation} />
 
@@ -349,6 +356,13 @@ export const TemporalExplorer: React.FC<TemporalExplorerProps> = ({
               pathOptions={{ color: '#0284c7', fillColor: '#fbbf24', fillOpacity: 1, weight: 3 }}
             />
           </MapContainer>
+
+          <NasaLayerControl
+            nasaState={nasaState}
+            onNasaStateChange={setNasaState}
+            selectedDate={startDate}
+            className="absolute top-3 right-3 z-[1000] max-w-[265px]"
+          />
 
           {/* Map Overlay Floating Badge */}
           <div className="absolute bottom-3 left-3 z-[1000] bg-slate-900/85 backdrop-blur-md text-white px-3 py-2 rounded-lg border border-slate-700/60 shadow-lg text-xs flex items-center gap-3">

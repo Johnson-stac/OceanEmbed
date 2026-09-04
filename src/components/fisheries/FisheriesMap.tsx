@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapContainer, TileLayer, Rectangle, Popup, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { MockSpecies } from '../../data/mockSpecies';
 import type { SpatialGridCell, SpatialHabitatSummary } from '../../services/habitatAnalysis';
 import { Compass, Flame } from 'lucide-react';
+import { DEFAULT_NASA_STATE, type ActiveNasaState } from '../../services/nasa/gibsConfig';
+import { NasaTileLayer } from '../nasa/NasaTileLayer';
+import { NasaLayerControl } from '../nasa/NasaLayerControl';
 
 interface FisheriesMapProps {
   species: MockSpecies;
@@ -27,6 +30,9 @@ export const FisheriesMap: React.FC<FisheriesMapProps> = ({
   selectedDepth,
   onDepthChange
 }) => {
+  const [nasaState, setNasaState] = useState<ActiveNasaState>(DEFAULT_NASA_STATE);
+  const currentDateIso = new Date().toISOString();
+
   return (
     <div className="h-full w-full rounded-2xl overflow-hidden border border-slate-300 shadow-md relative z-0 flex flex-col">
       {/* Map Header / Controls Overlay */}
@@ -57,6 +63,15 @@ export const FisheriesMap: React.FC<FisheriesMapProps> = ({
             </button>
           ))}
         </div>
+      </div>
+
+      {/* NASA Satellite Data Overlay */}
+      <div className="absolute bottom-6 left-6 z-[1000] max-w-[270px]">
+        <NasaLayerControl
+          nasaState={nasaState}
+          onNasaStateChange={setNasaState}
+          selectedDate={currentDateIso}
+        />
       </div>
 
       {/* Peak Hotspot Banner */}
@@ -105,6 +120,9 @@ export const FisheriesMap: React.FC<FisheriesMapProps> = ({
           attribution='&copy; <a href="https://www.esri.com">Esri World Ocean</a>'
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}"
         />
+
+        {/* NASA GIBS Satellite Tile Layers */}
+        <NasaTileLayer nasaState={nasaState} selectedDate={currentDateIso} />
 
         {/* Spatial Grid Cells */}
         {gridCells.map((cell) => {

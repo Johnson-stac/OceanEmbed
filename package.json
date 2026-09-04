@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@deck.gl/core": "^9.3.11",
+    "@deck.gl/layers": "^9.3.11",
+    "@deck.gl/react": "^9.3.11",
     "cesium": "^1.140.0",
     "framer-motion": "^13.1.1",
     "groq-sdk": "^1.6.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.37.0",
+    "maplibre-gl": "^6.6.0",
     "plotly.js-dist-min": "^4.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

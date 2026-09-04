@@ -111,6 +111,12 @@ export const Header: React.FC<HeaderProps> = ({ activeTab = 'Prediction', onTabC
             Home
           </Link>
           <Link 
+            to="/time-machine" 
+            className={`text-sm font-semibold transition-colors flex items-center gap-1.5 ${location.pathname === '/time-machine' ? 'text-cyan-400 font-bold' : 'text-slate-400 hover:text-white'}`}
+          >
+            <span className="text-xs">🌊</span> Time Machine
+          </Link>
+          <Link 
             to="/fisheries" 
             className={`text-sm font-semibold transition-colors ${location.pathname === '/fisheries' ? 'text-cyan-400' : 'text-slate-400 hover:text-white'}`}
           >
