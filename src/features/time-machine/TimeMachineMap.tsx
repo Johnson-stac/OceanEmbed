@@ -94,7 +94,7 @@ export const TimeMachineMap: React.FC<TimeMachineMapProps> = ({
   const STEP = 0.8;
 
   return (
-    <div className="relative w-full h-full min-h-[580px] bg-slate-100 rounded-2xl overflow-hidden border border-slate-300 shadow-md flex flex-col z-0">
+    <div className="relative w-full h-full min-h-[320px] sm:min-h-[420px] md:min-h-[540px] bg-slate-100 rounded-2xl overflow-hidden border border-slate-300 shadow-md flex flex-col z-0">
       
       {/* Leaflet Map Engine */}
       <MapContainer
@@ -166,18 +166,18 @@ export const TimeMachineMap: React.FC<TimeMachineMapProps> = ({
       </MapContainer>
 
       {/* Top Left: Prominent Current Date Display & Seasonal Badge */}
-      <div className="absolute top-5 left-5 z-[1000] flex flex-col gap-2 pointer-events-none">
-        <div className="bg-white/95 backdrop-blur-md border border-slate-200 px-5 py-3 rounded-2xl shadow-md flex items-center gap-4">
-          <div className="w-3 h-3 rounded-full bg-cyan-600 animate-ping" />
+      <div className="absolute top-2.5 left-2.5 sm:top-5 sm:left-5 z-[1000] flex flex-col gap-1.5 sm:gap-2 pointer-events-none max-w-[calc(100%-140px)] sm:max-w-none">
+        <div className="bg-white/95 backdrop-blur-md border border-slate-200 px-3 py-1.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl shadow-md flex items-center gap-2.5 sm:gap-4">
+          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-cyan-600 animate-ping shrink-0" />
           <div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
+            <h2 className="text-sm sm:text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-1.5 sm:gap-2">
               {currentMonthState.fullLabel}
             </h2>
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 mt-0.5">
-              <Navigation className="w-3.5 h-3.5 text-cyan-600" />
-              <span>North Indian Ocean</span>
-              <span className="text-slate-300">•</span>
-              <span className="text-cyan-800 bg-cyan-50 px-2 py-0.5 rounded border border-cyan-200 font-bold">
+            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold text-slate-500 mt-0.5">
+              <Navigation className="w-3 h-3 text-cyan-600 shrink-0" />
+              <span className="hidden sm:inline">North Indian Ocean</span>
+              <span className="hidden sm:inline text-slate-300">•</span>
+              <span className="text-cyan-800 bg-cyan-50 px-1.5 py-0.5 rounded border border-cyan-200 font-bold text-[9px] sm:text-xs">
                 {currentMonthState.season}
               </span>
             </div>
@@ -185,43 +185,44 @@ export const TimeMachineMap: React.FC<TimeMachineMapProps> = ({
         </div>
 
         {/* Dynamic Depth & Variable Pill */}
-        <div className="flex items-center gap-2 pointer-events-auto">
-          <span className="bg-white/90 backdrop-blur text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
-            Variable: <strong className="text-cyan-700 font-bold">{variable}</strong>
+        <div className="flex flex-wrap items-center gap-1 sm:gap-2 pointer-events-auto">
+          <span className="bg-white/90 backdrop-blur text-slate-700 text-[10px] sm:text-xs font-semibold px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-slate-200 shadow-sm">
+            Var: <strong className="text-cyan-700 font-bold">{variable}</strong>
           </span>
-          <span className="bg-white/90 backdrop-blur text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+          <span className="bg-white/90 backdrop-blur text-slate-700 text-[10px] sm:text-xs font-semibold px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-slate-200 shadow-sm">
             Depth: <strong className="text-cyan-700 font-bold">{depth}m</strong>
           </span>
           {mode !== 'Normal' && (
-            <span className="bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-1.5 rounded-xl border border-amber-200 shadow-sm">
-              Mode: {mode}
+            <span className="bg-amber-50 text-amber-800 text-[10px] sm:text-xs font-semibold px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-amber-200 shadow-sm">
+              {mode}
             </span>
           )}
         </div>
       </div>
 
       {/* Top Right: "Reveal Hidden Ocean" Button & Simulated Notice */}
-      <div className="absolute top-5 right-5 z-[1000] flex flex-col items-end gap-3 pointer-events-auto">
+      <div className="absolute top-2.5 right-2.5 sm:top-5 sm:right-5 z-[1000] flex flex-col items-end gap-2 sm:gap-3 pointer-events-auto">
         <button
           onClick={onToggleReveal}
-          className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md border ${
+          className={`flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1.5 sm:px-4 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition-all shadow-md border ${
             isRevealed
               ? 'bg-cyan-600 text-white border-cyan-700 shadow-cyan-200 animate-pulse'
               : 'bg-white hover:bg-slate-50 text-cyan-700 border-slate-300 hover:border-cyan-500'
           }`}
         >
-          <Zap className="w-4 h-4 text-cyan-600" />
-          <span>{isRevealed ? '🌊 Subsurface Active (0m → 1000m)' : '🌊 REVEAL HIDDEN OCEAN'}</span>
+          <Zap className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
+          <span className="hidden sm:inline">{isRevealed ? '🌊 Subsurface Active (0m → 1000m)' : '🌊 REVEAL HIDDEN OCEAN'}</span>
+          <span className="sm:hidden">{isRevealed ? '🌊 1000m' : '🌊 REVEAL'}</span>
         </button>
 
-        <div className="bg-white/90 backdrop-blur text-[11px] text-slate-600 px-3 py-1.5 rounded-lg border border-slate-200 flex items-center gap-1.5 shadow-sm">
-          <Info className="w-3.5 h-3.5 text-cyan-600" />
+        <div className="hidden sm:flex bg-white/90 backdrop-blur text-[11px] text-slate-600 px-3 py-1.5 rounded-lg border border-slate-200 items-center gap-1.5 shadow-sm">
+          <Info className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
           <span>Simulated Ocean State • Demonstration Data</span>
         </div>
       </div>
 
       {/* Bottom Left: NASA Satellite Data Layer Control */}
-      <div className="absolute bottom-5 left-5 z-[1000] max-w-[275px] pointer-events-auto">
+      <div className="absolute bottom-2.5 left-2.5 sm:bottom-5 sm:left-5 z-[1000] max-w-[210px] sm:max-w-[275px] pointer-events-auto">
         <NasaLayerControl
           nasaState={nasaState}
           onNasaStateChange={setNasaState}

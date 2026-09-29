@@ -171,9 +171,9 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 text-xs font-mono self-start sm:self-auto">
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#F0F5FC] border border-[#CBDDF3] text-[#0B3A82] font-semibold">
-              <Globe className="w-3.5 h-3.5 text-[#0B3A82]" />
-              <span>North Indian Ocean: 5°N–30°N | 60°E–100°E</span>
+            <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 bg-[#F0F5FC] border border-[#CBDDF3] text-[#0B3A82] font-semibold text-[11px] sm:text-xs">
+              <Globe className="w-3.5 h-3.5 text-[#0B3A82] shrink-0" />
+              <span><span className="hidden sm:inline">North Indian Ocean: </span>5°N–30°N | 60°E–100°E</span>
             </div>
           </div>
         </div>
@@ -234,7 +234,7 @@ export const DashboardPage: React.FC = () => {
           </section>
         ) : (
           /* Empty / Prompt State */
-          <div className="w-full mt-6 p-8 border border-slate-300 bg-[#F0F5FC] text-center max-w-xl mx-auto rounded-none">
+          <div className="w-full mt-6 p-5 sm:p-8 border border-slate-300 bg-[#F0F5FC] text-center max-w-xl mx-auto rounded-none">
             <Activity className="w-8 h-8 text-[#0B3A82] mx-auto mb-2.5" />
             <h3 className="text-sm font-black text-[#0B3A82] uppercase tracking-wider mb-1">
               Select Location &amp; Run Prediction

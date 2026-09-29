@@ -67,17 +67,17 @@ export const TimeMachineControls: React.FC<TimeMachineControlsProps> = ({
       </div>
 
       {/* 2. Depth Selector */}
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5 w-full lg:w-auto">
         <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
           <Layers className="w-3.5 h-3.5 text-cyan-600" />
           <span>Depth</span>
         </div>
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+        <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
           {DEPTH_OPTIONS.map(d => (
             <button
               key={d}
               onClick={() => onDepthChange(d)}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+              className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition-all ${
                 depth === d
                   ? 'bg-cyan-600 text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -90,12 +90,12 @@ export const TimeMachineControls: React.FC<TimeMachineControlsProps> = ({
       </div>
 
       {/* 3. Mode Selector */}
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5 w-full lg:w-auto">
         <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
           <Eye className="w-3.5 h-3.5 text-cyan-600" />
           <span>Visualization Mode</span>
         </div>
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+        <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
           {(['Normal', 'Anomaly', 'Change'] as ViewMode[]).map(m => (
             <button
               key={m}
@@ -114,9 +114,9 @@ export const TimeMachineControls: React.FC<TimeMachineControlsProps> = ({
 
       {/* Compare Inputs */}
       {mode === 'Change' && (
-        <div className="flex items-center gap-3 bg-amber-50 p-2.5 rounded-xl border border-amber-200 w-full lg:w-auto">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 bg-amber-50 p-2.5 rounded-xl border border-amber-200 w-full lg:w-auto">
           <ArrowRightLeft className="w-4 h-4 text-amber-700 shrink-0" />
-          <div className="flex items-center gap-2 text-xs">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
             <span className="text-amber-900 font-bold">Compare:</span>
             <select
               value={compareIndexA}

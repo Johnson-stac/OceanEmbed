@@ -147,17 +147,17 @@ export const AnalyticsPage: React.FC = () => {
         </div>
 
         {/* Validation Station & Date Selector */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-1">
-          <div className="flex items-center gap-2 overflow-x-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0B3A82] mr-2 flex items-center gap-1.5 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
+          <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1 sm:pb-0 scrollbar-none">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0B3A82] mr-1 sm:mr-2 flex items-center gap-1.5 shrink-0">
               <Compass className="w-4 h-4 text-[#0B3A82]" />
-              Benchmark Station:
+              Station:
             </span>
             {STATIONS.map((station, idx) => (
               <button
                 key={station.name}
                 onClick={() => setStationIndex(idx)}
-                className={`px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer border ${
+                className={`px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer border shrink-0 ${
                   stationIndex === idx
                     ? 'bg-[#0B3A82] text-white border-[#0B3A82] font-bold shadow-sm'
                     : 'bg-white text-slate-700 border-slate-300 hover:bg-[#F0F5FC]'
@@ -168,7 +168,7 @@ export const AnalyticsPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-1.5 bg-white border border-slate-300 px-3 py-1.5 text-xs text-slate-800 font-mono">
+          <div className="flex items-center gap-1.5 bg-white border border-slate-300 px-3 py-1.5 text-xs text-slate-800 font-mono shrink-0">
             <Calendar className="w-3.5 h-3.5 text-[#0B3A82]" />
             <span className="text-[10px] text-slate-500 uppercase font-sans font-bold">Date:</span>
             <input
@@ -183,7 +183,7 @@ export const AnalyticsPage: React.FC = () => {
         </div>
 
         {/* Dynamic Metric Cards with Confidence & Overall Error Tooltip (Strictly Blue & White) */}
-        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           
           {/* 1. Overall Error with RMSE/MAE Tooltip per requirement #25 & #26 */}
           <div className="bg-white p-4 border-2 border-slate-300 relative group">
@@ -274,8 +274,8 @@ export const AnalyticsPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           
           {/* Chart 1: Dual Line Graph per requirement #23 */}
-          <div className="lg:col-span-7 bg-white border border-slate-300 p-5 shadow-none">
-            <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
+          <div className="lg:col-span-7 bg-white border border-slate-300 p-4 sm:p-5 shadow-none">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 border-b border-slate-200 pb-2 gap-2">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
                   <Activity className="w-4 h-4 text-[#0B3A82]" />
@@ -286,7 +286,7 @@ export const AnalyticsPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 text-xs font-mono">
+              <div className="flex items-center gap-3 text-xs font-mono shrink-0">
                 <span className="flex items-center gap-1.5 text-[#0B3A82] font-bold">
                   <span className="w-3.5 h-1 bg-[#0B3A82] inline-block" /> OceanEmbed
                 </span>
@@ -296,7 +296,7 @@ export const AnalyticsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="h-[350px] w-full">
+            <div className="h-[280px] sm:h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart
                   layout="vertical"
@@ -348,7 +348,7 @@ export const AnalyticsPage: React.FC = () => {
           </div>
 
           {/* Chart 2: Prediction Error by Depth per requirement #28 (Shades of Blue Only) */}
-          <div className="lg:col-span-5 bg-white border border-slate-300 p-5 shadow-none">
+          <div className="lg:col-span-5 bg-white border border-slate-300 p-4 sm:p-5 shadow-none">
             <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
@@ -361,12 +361,12 @@ export const AnalyticsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="h-[350px] w-full">
+            <div className="h-[280px] sm:h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   layout="vertical"
                   data={errorByDepth}
-                  margin={{ top: 10, right: 30, left: 10, bottom: 20 }}
+                  margin={{ top: 10, right: 20, left: 0, bottom: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                   <XAxis
@@ -405,7 +405,7 @@ export const AnalyticsPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           
           {/* Chart 3: OceanEmbed vs GLORYS Scatter Plot per requirement #29 */}
-          <div className="lg:col-span-6 bg-white border border-slate-300 p-5 shadow-none">
+          <div className="lg:col-span-6 bg-white border border-slate-300 p-4 sm:p-5 shadow-none">
             <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
@@ -416,12 +416,12 @@ export const AnalyticsPage: React.FC = () => {
                   Linearity check showing dynamic agreement from 4°C to 30°C.
                 </p>
               </div>
-              <span className="font-mono text-xs text-[#0B3A82] bg-[#F0F5FC] border border-[#CBDDF3] px-2.5 py-1 font-bold">
+              <span className="font-mono text-xs text-[#0B3A82] bg-[#F0F5FC] border border-[#CBDDF3] px-2.5 py-1 font-bold shrink-0">
                 r = {metrics.correlation.toFixed(3)}
               </span>
             </div>
 
-            <div className="h-[290px] w-full">
+            <div className="h-[260px] sm:h-[290px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />

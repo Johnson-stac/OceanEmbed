@@ -192,30 +192,30 @@ export const MarineRoutesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans select-none">
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans select-none overflow-x-hidden">
       <Header />
 
-      <main className="flex-grow max-w-7xl xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full flex flex-col gap-5">
-        {/* Top Header - White Background, Sharp Corners */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white border border-slate-300 p-4 rounded-none">
+      <main className="flex-grow max-w-7xl xl:max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-5 w-full flex flex-col gap-4 sm:gap-5">
+        {/* Top Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white border border-slate-300 p-3 sm:p-4 rounded-none">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-[#F0F5FC] text-[#0B3A82] border border-[#CBDDF3] rounded-none">
+            <div className="p-2 bg-[#F0F5FC] text-[#0B3A82] border border-[#CBDDF3] rounded-none shrink-0">
               <Navigation className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-slate-900 tracking-tight uppercase flex items-center gap-2">
+              <h1 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight uppercase flex items-center gap-2">
                 Marine Route Intelligence &amp; Environmental Trajectory
               </h1>
-              <p className="text-xs text-slate-600 font-medium">
+              <p className="text-xs text-slate-600 font-medium hidden sm:block">
                 Subsurface thermal gradient awareness &amp; hydrodynamic trajectory comparison across the North Indian Ocean.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <button
               onClick={() => navigate('/3d')}
-              className="flex items-center gap-2 px-3.5 py-1.5 bg-[#F0F5FC] hover:bg-[#E1EDFB] border border-[#CBDDF3] text-[#0B3A82] text-xs font-bold transition-colors cursor-pointer rounded-none"
+              className="flex items-center gap-2 px-3 sm:px-3.5 py-1.5 bg-[#F0F5FC] hover:bg-[#E1EDFB] border border-[#CBDDF3] text-[#0B3A82] text-xs font-bold transition-colors cursor-pointer rounded-none"
               title="Inspect ocean environment in 3D"
             >
               <Box className="w-3.5 h-3.5" />
@@ -223,17 +223,18 @@ export const MarineRoutesPage: React.FC = () => {
             </button>
             <div className="flex items-center gap-1.5 bg-[#F0F5FC] border border-[#CBDDF3] px-3 py-1.5 text-xs font-mono text-[#0B3A82] font-semibold rounded-none">
               <ShieldCheck className="w-3.5 h-3.5 text-[#0B3A82]" />
-              <span>GLORYS Simulation</span>
+              <span className="hidden sm:inline">GLORYS Simulation</span>
+              <span className="inline sm:hidden">GLORYS</span>
             </div>
           </div>
         </div>
 
-        {/* Route Configuration Bar - Sharp White Box per Requirement #24 */}
-        <div className="bg-white border border-slate-300 rounded-none p-4 shadow-none">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-center">
+        {/* Route Configuration Bar */}
+        <div className="bg-white border border-slate-300 rounded-none p-3 sm:p-4 shadow-none">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
             
             {/* Origin */}
-            <div className="lg:col-span-3 bg-slate-50 p-2.5 border border-slate-200 rounded-none">
+            <div className="sm:col-span-1 lg:col-span-3 bg-slate-50 p-2.5 border border-slate-200 rounded-none">
               <label className="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1 block">
                 Departure Port
               </label>
@@ -251,7 +252,7 @@ export const MarineRoutesPage: React.FC = () => {
             </div>
 
             {/* Destination */}
-            <div className="lg:col-span-3 bg-slate-50 p-2.5 border border-slate-200 rounded-none">
+            <div className="sm:col-span-1 lg:col-span-3 bg-slate-50 p-2.5 border border-slate-200 rounded-none">
               <label className="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1 block">
                 Destination Port
               </label>
@@ -269,7 +270,7 @@ export const MarineRoutesPage: React.FC = () => {
             </div>
 
             {/* Vessel Type */}
-            <div className="lg:col-span-4 bg-slate-50 p-2.5 border border-slate-200 rounded-none">
+            <div className="sm:col-span-2 lg:col-span-4 bg-slate-50 p-2.5 border border-slate-200 rounded-none">
               <label className="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1 block">
                 Vessel Classification &amp; Draft
               </label>
@@ -287,11 +288,11 @@ export const MarineRoutesPage: React.FC = () => {
             </div>
 
             {/* Generate Action Button */}
-            <div className="lg:col-span-2 flex flex-col justify-end">
+            <div className="sm:col-span-2 lg:col-span-2 flex flex-col justify-end">
               <button
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="w-full py-3 px-4 bg-[#0B3A82] hover:bg-[#082C64] active:bg-[#051C40] text-white font-bold text-xs uppercase tracking-wider rounded-none border border-[#0B3A82] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                className="w-full py-2.5 sm:py-3 px-4 bg-[#0B3A82] hover:bg-[#082C64] active:bg-[#051C40] text-white font-bold text-xs uppercase tracking-wider rounded-none border border-[#0B3A82] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
               >
                 <Compass className="w-4 h-4" />
                 <span>{isGenerating ? 'Routing...' : 'GENERATE ROUTE'}</span>
@@ -300,11 +301,11 @@ export const MarineRoutesPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Map & Route Selection Area (Large Rectangular Dominant Map) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Map & Route Selection Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
           
-          {/* Map Column (Dominant 8 Cols, 560px-640px height) */}
-          <div className="lg:col-span-8 bg-white border-2 border-slate-300 overflow-hidden h-[540px] sm:h-[620px] relative rounded-none shadow-none">
+          {/* Map Column - Responsive height */}
+          <div className="lg:col-span-8 bg-white border-2 border-slate-300 overflow-hidden h-[320px] sm:h-[440px] md:h-[520px] lg:h-[580px] relative rounded-none shadow-none">
             <MapContainer
               center={[(origin.lat + destination.lat) / 2, (origin.lng + destination.lng) / 2]}
               zoom={5}
@@ -361,8 +362,8 @@ export const MarineRoutesPage: React.FC = () => {
               })}
             </MapContainer>
 
-            {/* Floating Map Legend (Strictly Blue & White) */}
-            <div className="absolute bottom-4 left-4 z-[400] bg-white border border-slate-300 p-3 rounded-none text-xs shadow-sm space-y-1.5 min-w-[220px]">
+            {/* Floating Map Legend - Responsive position */}
+            <div className="absolute bottom-3 left-3 z-[400] bg-white border border-slate-300 p-2 sm:p-3 rounded-none text-xs shadow-sm space-y-1 sm:space-y-1.5 min-w-[160px] sm:min-w-[220px]">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#0B3A82] block mb-1 border-b border-slate-200 pb-1">
                 Active Trajectories
               </span>
@@ -370,7 +371,7 @@ export const MarineRoutesPage: React.FC = () => {
                 <button
                   key={r.id}
                   onClick={() => setSelectedRouteId(r.id)}
-                  className={`flex items-center gap-2 w-full text-left px-2 py-1 rounded-none transition-colors ${
+                  className={`flex items-center gap-2 w-full text-left px-1 sm:px-2 py-1 rounded-none transition-colors ${
                     r.id === selectedRouteId ? 'bg-[#F0F5FC] text-[#0B3A82] font-bold border-l-2 border-l-[#0B3A82]' : 'text-slate-600 hover:text-[#0B3A82]'
                   }`}
                 >
@@ -381,13 +382,13 @@ export const MarineRoutesPage: React.FC = () => {
                       borderTop: r.lineStyle === 'dashed' ? '1px dashed' : undefined,
                     }}
                   />
-                  <span className="text-[11px] truncate">{r.name}</span>
+                  <span className="text-[10px] sm:text-[11px] truncate">{r.name}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Right Column: Comparative Route Analytics Cards (Strictly White & Blue) */}
+          {/* Right Column: Comparative Route Analytics Cards */}
           <div className="lg:col-span-4 space-y-3">
             {routes.map((r) => {
               const isSelected = r.id === selectedRouteId;
@@ -395,18 +396,18 @@ export const MarineRoutesPage: React.FC = () => {
                 <div
                   key={r.id}
                   onClick={() => setSelectedRouteId(r.id)}
-                  className={`p-4 rounded-none border transition-colors cursor-pointer ${
+                  className={`p-3 sm:p-4 rounded-none border transition-colors cursor-pointer ${
                     isSelected
                       ? 'bg-[#F0F5FC] border-[#0B3A82] border-l-4 border-l-[#0B3A82] shadow-sm'
                       : 'bg-white border-slate-300 hover:border-slate-400 hover:bg-slate-50'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
                     <span className="text-xs font-bold text-slate-900 flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-none" style={{ backgroundColor: r.color }} />
-                      {r.name}
+                      <span className="w-2.5 h-2.5 rounded-none shrink-0" style={{ backgroundColor: r.color }} />
+                      <span className="leading-tight">{r.name}</span>
                     </span>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-none uppercase tracking-wider bg-white border border-[#CBDDF3] text-[#0B3A82]">
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-none uppercase tracking-wider bg-white border border-[#CBDDF3] text-[#0B3A82] shrink-0">
                       {r.badge}
                     </span>
                   </div>
@@ -438,28 +439,29 @@ export const MarineRoutesPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Subsurface Thermal Exposure along Selected Route Chart (Pure Blue Lines) */}
-        <div className="bg-white border border-slate-300 rounded-none p-5 shadow-none">
+        {/* Subsurface Thermal Exposure Chart */}
+        <div className="bg-white border border-slate-300 rounded-none p-3 sm:p-5 shadow-none">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2 border-b border-slate-200 pb-3">
             <div>
               <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
                 <Waves className="w-4 h-4 text-[#0B3A82]" />
-                Subsurface Thermal Cross-Section Along {activeRoute.name}
+                <span className="hidden sm:inline">Subsurface Thermal Cross-Section Along {activeRoute.name}</span>
+                <span className="inline sm:hidden">Thermal Cross-Section</span>
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 mt-0.5 hidden sm:block">
                 Modeled vertical thermal profiles (SST, 50m mixed layer, 100m thermocline, 200m depth) along route trajectory.
               </p>
             </div>
-            <span className="text-xs text-slate-600 font-mono flex items-center gap-1.5 self-start sm:self-auto">
-              <span>{origin.name} (0%)</span>
-              <ArrowRight className="w-3 h-3 text-[#0B3A82]" />
-              <span>{destination.name} (100%)</span>
+            <span className="text-xs text-slate-600 font-mono flex items-center gap-1.5 flex-wrap self-start sm:self-auto">
+              <span className="truncate max-w-[120px] sm:max-w-none">{origin.name} (0%)</span>
+              <ArrowRight className="w-3 h-3 text-[#0B3A82] shrink-0" />
+              <span className="truncate max-w-[120px] sm:max-w-none">{destination.name} (100%)</span>
             </span>
           </div>
 
-          <div className="h-[250px] w-full">
+          <div className="h-[200px] sm:h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={thermalProfileData} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
+              <LineChart data={thermalProfileData} margin={{ top: 10, right: 10, left: -10, bottom: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="point" stroke="#94a3b8" tick={{ fontSize: 10, fill: '#475569' }} />
                 <YAxis stroke="#94a3b8" tick={{ fontSize: 10, fill: '#475569' }} unit="°C" domain={[15, 32]} />
@@ -474,7 +476,7 @@ export const MarineRoutesPage: React.FC = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 pt-3 border-t border-slate-100 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-3 border-t border-slate-100 text-xs">
             <div className="flex items-center gap-2">
               <span className="w-3 h-1 bg-[#0B3A82]"></span>
               <span className="text-slate-700 font-semibold">Surface SST</span>
@@ -495,7 +497,7 @@ export const MarineRoutesPage: React.FC = () => {
         </div>
 
         {/* Operational Disclaimer */}
-        <div className="p-3.5 bg-[#F0F5FC] border border-[#CBDDF3] text-xs text-[#0B3A82] leading-relaxed text-center rounded-none font-medium">
+        <div className="p-3 sm:p-3.5 bg-[#F0F5FC] border border-[#CBDDF3] text-xs text-[#0B3A82] leading-relaxed text-center rounded-none font-medium">
           <strong>Operational Notice:</strong> Marine Route Intelligence simulates environmental route optimization by integrating OceanEmbed subsurface thermal gradients with metocean parameters. Commercial navigation decisions must adhere to SOLAS guidelines, IMO traffic separation schemes (TSS), and real-time maritime notices.
         </div>
       </main>

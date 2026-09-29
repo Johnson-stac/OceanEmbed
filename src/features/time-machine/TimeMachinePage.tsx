@@ -127,16 +127,16 @@ export default function TimeMachinePage() {
       <main className="flex-grow max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex flex-col gap-6">
         
         {/* Page Hero Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <div className="p-2.5 bg-cyan-50 text-cyan-600 rounded-xl border border-cyan-100 shadow-sm">
-                <Globe2 className="w-6 h-6 text-cyan-600" />
+              <div className="p-2 sm:p-2.5 bg-cyan-50 text-cyan-600 rounded-xl border border-cyan-100 shadow-sm shrink-0">
+                <Globe2 className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex flex-wrap items-center gap-2">
                   <span>OCEAN TIME MACHINE</span>
-                  <span className="text-xs font-bold text-cyan-800 bg-cyan-50 px-2.5 py-1 rounded-full border border-cyan-200 uppercase tracking-widest">
+                  <span className="text-[10px] sm:text-xs font-bold text-cyan-800 bg-cyan-50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-cyan-200 uppercase tracking-widest">
                     4D WebGL Explorer
                   </span>
                 </h1>
@@ -147,14 +147,14 @@ export default function TimeMachinePage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-xl text-xs text-slate-700 font-semibold shadow-sm">
-              <Compass className="w-4 h-4 text-cyan-600" />
-              <span>North Indian Ocean (5°N–30°N, 60°E–100°E)</span>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs text-slate-700 font-semibold shadow-sm">
+              <Compass className="w-4 h-4 text-cyan-600 shrink-0" />
+              <span>North Indian Ocean (5°N–30°N)</span>
             </div>
-            <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Simulated Prototype Data</span>
+            <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold shadow-sm">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Simulated Data</span>
             </div>
           </div>
         </div>
@@ -178,7 +178,7 @@ export default function TimeMachinePage() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-stretch">
           
           {/* WebGL Animated Map */}
-          <div className="h-[640px] w-full relative">
+          <div className="h-[340px] sm:h-[440px] md:h-[540px] lg:h-[640px] w-full relative">
             <TimeMachineMap
               gridData={gridData}
               currentMonthState={currentMonthState}
@@ -204,7 +204,7 @@ export default function TimeMachinePage() {
               <ul className="text-xs text-slate-600 space-y-2.5 list-disc pl-4 font-medium">
                 <li>Press <strong className="text-cyan-700">PLAY TIMELINE</strong> to watch the ocean heatmap continuously evolve across 49 months.</li>
                 <li>Switch depth from <strong className="text-cyan-700">0m to 1000m</strong> to explore thermoclines beneath the surface.</li>
-                <li>Click any point on the map to pin telemetry & inspect time-series trends.</li>
+                <li>Click any point on the map to pin telemetry &amp; inspect time-series trends.</li>
                 <li>Click <strong className="text-amber-700">REVEAL HIDDEN OCEAN</strong> to plunge below satellite surface views.</li>
               </ul>
             </div>

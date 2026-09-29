@@ -94,7 +94,7 @@ export const DashboardMap: React.FC<DashboardMapProps> = ({
   };
 
   return (
-    <div className="w-full relative h-[360px] sm:h-[400px] md:h-[420px] lg:h-[440px] rounded-none border border-slate-300 dark:border-slate-700 shadow-sm bg-[#0B3A82] overflow-hidden transition-colors">
+    <div className="w-full relative h-[280px] xs:h-[320px] sm:h-[380px] md:h-[420px] lg:h-[440px] rounded-none border border-slate-300 dark:border-slate-700 shadow-sm bg-[#0B3A82] overflow-hidden transition-colors">
       <MapContainer
         center={[17.5, 80]}
         zoom={5}
@@ -194,35 +194,41 @@ export const DashboardMap: React.FC<DashboardMapProps> = ({
         {!isComparing ? (
           <button
             onClick={onToggleCompare}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-[#F0F5FC] text-[#0B3A82] border-2 border-[#0B3A82] text-xs font-bold transition-colors cursor-pointer shadow-sm rounded-none"
+            className="flex items-center gap-1.5 px-2 sm:px-3.5 py-1.5 sm:py-2 bg-white hover:bg-[#F0F5FC] text-[#0B3A82] border-2 border-[#0B3A82] text-xs font-bold transition-colors cursor-pointer shadow-sm rounded-none"
             title="Compare two ocean locations side-by-side"
           >
-            <ArrowRightLeft className="w-4 h-4 text-[#0B3A82]" />
-            <span>COMPARE LOCATIONS</span>
+            <ArrowRightLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0B3A82]" />
+            <span className="hidden sm:inline">COMPARE LOCATIONS</span>
+            <span className="inline sm:hidden">COMPARE</span>
           </button>
         ) : (
-          <div className="flex items-center gap-2 bg-white px-3.5 py-2 border-2 border-[#0B3A82] text-xs text-slate-900 shadow-md rounded-none">
-            <span className="flex items-center gap-1.5 text-[#0B3A82] font-bold">
-              <Crosshair className="w-4 h-4 text-[#0B3A82]" />
-              {!comparePointA
-                ? 'Click map to select Point A'
-                : !comparePointB
-                ? 'Click map to select Point B'
-                : 'Comparing Points A & B'}
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-white px-2 sm:px-3.5 py-1.5 sm:py-2 border-2 border-[#0B3A82] text-xs text-slate-900 shadow-md rounded-none">
+            <span className="flex items-center gap-1 text-[#0B3A82] font-bold">
+              <Crosshair className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0B3A82]" />
+              <span className="hidden sm:inline">
+                {!comparePointA
+                  ? 'Click map to select Point A'
+                  : !comparePointB
+                  ? 'Click map to select Point B'
+                  : 'Comparing Points A & B'}
+              </span>
+              <span className="inline sm:hidden">
+                {!comparePointA ? 'Tap Point A' : !comparePointB ? 'Tap Point B' : 'A vs B'}
+              </span>
             </span>
             <button
               onClick={onClearCompare}
               className="p-1 hover:bg-[#F0F5FC] text-[#0B3A82] transition-colors cursor-pointer rounded-none ml-1"
               title="Clear comparison"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         )}
       </div>
 
-      {/* Bottom Left: Observatories Presets (Blue & White Only) */}
-      <div className="absolute bottom-3 left-3 z-[400] hidden md:flex items-center gap-1.5 bg-white/95 px-3 py-1.5 border border-slate-300 text-xs text-slate-800 rounded-none shadow-sm">
+      {/* Bottom Left: Observatories Presets (Blue & White Only) - Desktop only */}
+      <div className="absolute bottom-3 left-3 z-[400] hidden lg:flex items-center gap-1.5 bg-white/95 px-3 py-1.5 border border-slate-300 text-xs text-slate-800 rounded-none shadow-sm">
         <MapPin className="w-3.5 h-3.5 text-[#0B3A82]" />
         <span className="font-bold text-[#0B3A82] mr-1 text-[11px] uppercase tracking-wider">Stations:</span>
         {PRESET_STATIONS.map((station) => (
@@ -236,11 +242,11 @@ export const DashboardMap: React.FC<DashboardMapProps> = ({
         ))}
       </div>
 
-      {/* Bottom Right: Status Indicator (Blue & White Only) */}
-      <div className="absolute bottom-3 right-3 z-[400] flex items-center gap-2.5 bg-white/95 px-3 py-1.5 border border-slate-300 text-[11px] font-mono text-slate-700 rounded-none shadow-sm">
+      {/* Bottom Right: Status Indicator - Hidden on small mobile */}
+      <div className="absolute bottom-3 right-3 z-[400] hidden sm:flex items-center gap-2.5 bg-white/95 px-3 py-1.5 border border-slate-300 text-[11px] font-mono text-slate-700 rounded-none shadow-sm">
         <span className="font-bold text-[#0B3A82]">NASA GIBS True Color (100%)</span>
         <span className="text-slate-300">|</span>
-        <span className="font-semibold text-slate-800">5°N–30°N, 60°E–100°E</span>
+        <span className="font-semibold text-slate-800 hidden md:inline">5°N–30°N, 60°E–100°E</span>
       </div>
     </div>
   );

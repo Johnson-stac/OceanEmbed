@@ -31,27 +31,27 @@ export default function FisheriesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans select-none">
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans select-none overflow-x-hidden">
       <Header />
 
-      <main className="flex-grow max-w-7xl xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full flex flex-col gap-5">
-        {/* Page Top Context Bar - Sharp rectangular scientific banner */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white border border-slate-300 p-4 rounded-none">
+      <main className="flex-grow max-w-7xl xl:max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-5 w-full flex flex-col gap-4 sm:gap-5">
+        {/* Page Top Context Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white border border-slate-300 p-3 sm:p-4 rounded-none">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-[#F0F5FC] text-[#0B3A82] border border-[#CBDDF3] rounded-none shrink-0">
               <Fish className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-slate-900 tracking-tight uppercase">
+              <h1 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight uppercase">
                 Fisheries Intelligence &amp; Thermal Habitat Modeling
               </h1>
-              <p className="text-xs text-slate-600 font-medium">
+              <p className="text-xs text-slate-600 font-medium hidden sm:block">
                 Ocean-masked potential thermal habitat points derived from OceanEmbed subsurface temperature reconstruction.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start md:self-auto">
+          <div className="flex items-center gap-2 flex-wrap">
             <div className="flex items-center gap-1.5 bg-white border border-slate-300 px-3 py-1.5 text-xs text-slate-800 font-mono rounded-none">
               <Calendar className="w-3.5 h-3.5 text-[#0B3A82]" />
               <input
@@ -65,15 +65,16 @@ export default function FisheriesPage() {
             </div>
             <div className="flex items-center gap-1.5 bg-[#F0F5FC] text-[#0B3A82] border border-[#CBDDF3] px-3 py-1.5 text-xs font-bold rounded-none">
               <CheckSquare className="w-3.5 h-3.5 text-[#0B3A82]" />
-              <span>Potential Thermal Habitat</span>
+              <span className="hidden sm:inline">Potential Thermal Habitat</span>
+              <span className="inline sm:hidden">Thermal Habitat</span>
             </div>
           </div>
         </div>
 
         {/* Primary 2-Column: Dominant Rectangular Map & Species Profile Selector */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-5 min-h-[580px] lg:h-[620px]">
-          {/* Rectangular Ocean Map (Dominant, sharp corners, no generic heatmap) */}
-          <div className="h-full w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4 sm:gap-5">
+          {/* Rectangular Ocean Map - Mobile: fixed height, Desktop: taller */}
+          <div className="h-[300px] sm:h-[420px] md:h-[500px] lg:h-[620px] w-full">
             <FisheriesMap
               species={selectedSpecies}
               points={spatialData.points}
@@ -88,7 +89,7 @@ export default function FisheriesPage() {
           </div>
 
           {/* Species Selector */}
-          <div className="h-full">
+          <div className="lg:h-[620px]">
             <SpeciesSelector
               speciesList={mockSpecies}
               selectedSpeciesId={selectedSpeciesId}
@@ -106,15 +107,15 @@ export default function FisheriesPage() {
         </div>
 
         {/* Depth Profile Chart & Ecological Intelligence Insight */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch w-full min-h-[360px]">
-          <div className="h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-stretch w-full">
+          <div className="min-h-[300px] sm:min-h-[360px]">
             <TemperatureDepthChart
               predictionData={null}
               species={selectedSpecies}
               selectedPoint={selectedPoint}
             />
           </div>
-          <div className="h-full">
+          <div className="min-h-[300px] sm:min-h-[360px]">
             <FisheriesInsight summary={spatialData.summary} species={selectedSpecies} />
           </div>
         </div>
@@ -125,7 +126,7 @@ export default function FisheriesPage() {
         </div>
 
         {/* Explicit Data Honesty Disclaimer */}
-        <div className="p-3.5 bg-[#F0F5FC] border border-[#CBDDF3] rounded-none text-xs text-[#0B3A82] leading-relaxed text-center font-medium">
+        <div className="p-3 sm:p-3.5 bg-[#F0F5FC] border border-[#CBDDF3] rounded-none text-xs text-[#0B3A82] leading-relaxed text-center font-medium">
           <strong>Data Integrity Notice:</strong> Spatial points represent{' '}
           <strong className="text-[#0B3A82]">Potential Thermal Habitat</strong> derived from OceanEmbed subsurface temperature reconstruction and species physiological tolerance windows. All points are rigorously masked to ocean waters. They indicate environmental temperature compatibility and do not guarantee fish presence or commercial abundance.
         </div>

@@ -32,11 +32,11 @@ export const LocationComparisonPanel: React.FC<LocationComparisonPanelProps> = (
   });
 
   return (
-    <div className="bg-white border border-slate-300 rounded-none p-6 shadow-none text-slate-900 mt-5 font-sans">
+    <div className="bg-white border border-slate-300 rounded-none p-4 sm:p-6 shadow-none text-slate-900 mt-5 font-sans">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-[#F0F5FC] text-[#0B3A82] border border-[#CBDDF3]">
+          <div className="p-2 bg-[#F0F5FC] text-[#0B3A82] border border-[#CBDDF3] shrink-0">
             <ArrowRightLeft className="w-4 h-4" />
           </div>
           <div>
@@ -51,7 +51,7 @@ export const LocationComparisonPanel: React.FC<LocationComparisonPanelProps> = (
 
         <button
           onClick={onClose}
-          className="px-3.5 py-1.5 bg-white hover:bg-[#F0F5FC] text-[#0B3A82] border border-[#0B3A82] text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+          className="px-3.5 py-1.5 bg-white hover:bg-[#F0F5FC] text-[#0B3A82] border border-[#0B3A82] text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 self-start sm:self-auto shrink-0"
           title="Clear comparison"
         >
           <X className="w-4 h-4" />
@@ -71,87 +71,89 @@ export const LocationComparisonPanel: React.FC<LocationComparisonPanelProps> = (
               <span className="text-[10px] text-slate-600 font-mono">OceanEmbed Reconstructed</span>
             </div>
 
-            <table className="w-full text-left text-xs font-mono">
-              <thead className="bg-slate-100 text-slate-800 text-[10px] uppercase border-b border-slate-200">
-                <tr>
-                  <th className="px-4 py-2.5 font-bold font-sans">PARAMETER / DEPTH</th>
-                  <th className="px-4 py-2.5 text-[#0B3A82] font-black">POINT A</th>
-                  <th className="px-4 py-2.5 text-[#155BBD] font-black">POINT B</th>
-                  <th className="px-4 py-2.5 text-right font-bold font-sans">DIFFERENCE</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-2 text-slate-700 font-sans font-medium">Latitude</td>
-                  <td className="px-4 py-2 text-[#0B3A82] font-bold">{pointA.location.lat.toFixed(2)}°</td>
-                  <td className="px-4 py-2 text-[#155BBD] font-bold">{pointB.location.lat.toFixed(2)}°</td>
-                  <td className="px-4 py-2 text-right text-slate-400">—</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-2 text-slate-700 font-sans font-medium">Longitude</td>
-                  <td className="px-4 py-2 text-[#0B3A82] font-bold">{pointA.location.lng.toFixed(2)}°</td>
-                  <td className="px-4 py-2 text-[#155BBD] font-bold">{pointB.location.lng.toFixed(2)}°</td>
-                  <td className="px-4 py-2 text-right text-slate-400">—</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-2 text-slate-700 font-sans font-medium">SST</td>
-                  <td className="px-4 py-2 text-slate-900 font-bold">{pointA.surface.sst.toFixed(1)}°C</td>
-                  <td className="px-4 py-2 text-slate-900 font-bold">{pointB.surface.sst.toFixed(1)}°C</td>
-                  <td className="px-4 py-2 text-right font-bold text-[#0B3A82]">
-                    {(pointA.surface.sst - pointB.surface.sst) > 0 ? '+' : ''}
-                    {(pointA.surface.sst - pointB.surface.sst).toFixed(1)}°C
-                  </td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-2 text-slate-700 font-sans font-medium">SSS</td>
-                  <td className="px-4 py-2">{pointA.surface.sss.toFixed(1)} PSU</td>
-                  <td className="px-4 py-2">{pointB.surface.sss.toFixed(1)} PSU</td>
-                  <td className="px-4 py-2 text-right text-slate-600">
-                    {(pointA.surface.sss - pointB.surface.sss) > 0 ? '+' : ''}
-                    {(pointA.surface.sss - pointB.surface.sss).toFixed(1)} PSU
-                  </td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-2 text-slate-700 font-sans font-medium">SLA</td>
-                  <td className="px-4 py-2">{pointA.surface.sla.toFixed(2)}m</td>
-                  <td className="px-4 py-2">{pointB.surface.sla.toFixed(2)}m</td>
-                  <td className="px-4 py-2 text-right text-slate-600">
-                    {(pointA.surface.sla - pointB.surface.sla) > 0 ? '+' : ''}
-                    {(pointA.surface.sla - pointB.surface.sla).toFixed(2)}m
-                  </td>
-                </tr>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs font-mono min-w-[420px]">
+                <thead className="bg-slate-100 text-slate-800 text-[10px] uppercase border-b border-slate-200">
+                  <tr>
+                    <th className="px-4 py-2.5 font-bold font-sans">PARAMETER / DEPTH</th>
+                    <th className="px-4 py-2.5 text-[#0B3A82] font-black">POINT A</th>
+                    <th className="px-4 py-2.5 text-[#155BBD] font-black">POINT B</th>
+                    <th className="px-4 py-2.5 text-right font-bold font-sans">DIFFERENCE</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  <tr className="hover:bg-slate-50">
+                    <td className="px-4 py-2 text-slate-700 font-sans font-medium">Latitude</td>
+                    <td className="px-4 py-2 text-[#0B3A82] font-bold">{pointA.location.lat.toFixed(2)}°</td>
+                    <td className="px-4 py-2 text-[#155BBD] font-bold">{pointB.location.lat.toFixed(2)}°</td>
+                    <td className="px-4 py-2 text-right text-slate-400">—</td>
+                  </tr>
+                  <tr className="hover:bg-slate-50">
+                    <td className="px-4 py-2 text-slate-700 font-sans font-medium">Longitude</td>
+                    <td className="px-4 py-2 text-[#0B3A82] font-bold">{pointA.location.lng.toFixed(2)}°</td>
+                    <td className="px-4 py-2 text-[#155BBD] font-bold">{pointB.location.lng.toFixed(2)}°</td>
+                    <td className="px-4 py-2 text-right text-slate-400">—</td>
+                  </tr>
+                  <tr className="hover:bg-slate-50">
+                    <td className="px-4 py-2 text-slate-700 font-sans font-medium">SST</td>
+                    <td className="px-4 py-2 text-slate-900 font-bold">{pointA.surface.sst.toFixed(1)}°C</td>
+                    <td className="px-4 py-2 text-slate-900 font-bold">{pointB.surface.sst.toFixed(1)}°C</td>
+                    <td className="px-4 py-2 text-right font-bold text-[#0B3A82]">
+                      {(pointA.surface.sst - pointB.surface.sst) > 0 ? '+' : ''}
+                      {(pointA.surface.sst - pointB.surface.sst).toFixed(1)}°C
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50">
+                    <td className="px-4 py-2 text-slate-700 font-sans font-medium">SSS</td>
+                    <td className="px-4 py-2">{pointA.surface.sss.toFixed(1)} PSU</td>
+                    <td className="px-4 py-2">{pointB.surface.sss.toFixed(1)} PSU</td>
+                    <td className="px-4 py-2 text-right text-slate-600">
+                      {(pointA.surface.sss - pointB.surface.sss) > 0 ? '+' : ''}
+                      {(pointA.surface.sss - pointB.surface.sss).toFixed(1)} PSU
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50">
+                    <td className="px-4 py-2 text-slate-700 font-sans font-medium">SLA</td>
+                    <td className="px-4 py-2">{pointA.surface.sla.toFixed(2)}m</td>
+                    <td className="px-4 py-2">{pointB.surface.sla.toFixed(2)}m</td>
+                    <td className="px-4 py-2 text-right text-slate-600">
+                      {(pointA.surface.sla - pointB.surface.sla) > 0 ? '+' : ''}
+                      {(pointA.surface.sla - pointB.surface.sla).toFixed(2)}m
+                    </td>
+                  </tr>
 
-                {/* Subsurface Depth Slices */}
-                {depthsToDisplay.map((d) => {
-                  const tempA = pointA.profile.find((p) => p.depth === d)?.predicted_temperature ?? 0;
-                  const tempB = pointB.profile.find((p) => p.depth === d)?.predicted_temperature ?? 0;
-                  const diff = tempA - tempB;
-                  return (
-                    <tr key={d} className="hover:bg-slate-50 bg-[#F0F5FC]/40">
-                      <td className="px-4 py-2 text-slate-800 font-sans font-semibold">{d}m</td>
-                      <td className="px-4 py-2 font-bold text-[#0B3A82]">{tempA.toFixed(1)}°C</td>
-                      <td className="px-4 py-2 font-bold text-[#155BBD]">{tempB.toFixed(1)}°C</td>
-                      <td className="px-4 py-2 text-right font-bold text-[#0B3A82]">
-                        <span className="px-1.5 py-0.5 bg-[#F0F5FC] border border-[#CBDDF3]">
-                          {diff > 0 ? '+' : ''}{diff.toFixed(1)}°C
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  {/* Subsurface Depth Slices */}
+                  {depthsToDisplay.map((d) => {
+                    const tempA = pointA.profile.find((p) => p.depth === d)?.predicted_temperature ?? 0;
+                    const tempB = pointB.profile.find((p) => p.depth === d)?.predicted_temperature ?? 0;
+                    const diff = tempA - tempB;
+                    return (
+                      <tr key={d} className="hover:bg-slate-50 bg-[#F0F5FC]/40">
+                        <td className="px-4 py-2 text-slate-800 font-sans font-semibold">{d}m</td>
+                        <td className="px-4 py-2 font-bold text-[#0B3A82]">{tempA.toFixed(1)}°C</td>
+                        <td className="px-4 py-2 font-bold text-[#155BBD]">{tempB.toFixed(1)}°C</td>
+                        <td className="px-4 py-2 text-right font-bold text-[#0B3A82]">
+                          <span className="px-1.5 py-0.5 bg-[#F0F5FC] border border-[#CBDDF3]">
+                            {diff > 0 ? '+' : ''}{diff.toFixed(1)}°C
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         {/* Right: Comparative Temperature Depth Curve */}
-        <div className="lg:col-span-6 border border-slate-300 p-4 bg-white">
-          <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
+        <div className="lg:col-span-6 border border-slate-300 p-3.5 sm:p-4 bg-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 border-b border-slate-200 pb-2 gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
               <Layers className="w-3.5 h-3.5 text-[#0B3A82]" />
               Subsurface Temperature Comparison
             </span>
-            <div className="flex items-center gap-4 text-xs font-mono">
+            <div className="flex items-center gap-3 text-xs font-mono shrink-0">
               <span className="flex items-center gap-1.5 text-[#0B3A82] font-bold">
                 <span className="w-3.5 h-1 bg-[#0B3A82] inline-block" /> Point A ({pointA.location.lat.toFixed(1)}°N)
               </span>
@@ -161,12 +163,12 @@ export const LocationComparisonPanel: React.FC<LocationComparisonPanelProps> = (
             </div>
           </div>
 
-          <div className="h-[330px] w-full">
+          <div className="h-[280px] sm:h-[330px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 layout="vertical"
                 data={chartData}
-                margin={{ top: 10, right: 30, left: 10, bottom: 20 }}
+                margin={{ top: 10, right: 20, left: -10, bottom: 20 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis

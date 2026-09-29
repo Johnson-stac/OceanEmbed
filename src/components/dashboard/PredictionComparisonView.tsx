@@ -45,7 +45,7 @@ export const PredictionComparisonView: React.FC<PredictionComparisonViewProps> =
   };
 
   return (
-    <div className="bg-white border border-slate-300 rounded-none p-6 shadow-none text-slate-900 mt-5 font-sans">
+    <div className="bg-white border border-slate-300 rounded-none p-4 sm:p-6 shadow-none text-slate-900 mt-5 font-sans">
       {/* Top Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-200 gap-4">
         <div>
@@ -55,7 +55,7 @@ export const PredictionComparisonView: React.FC<PredictionComparisonViewProps> =
               Prediction Complete
             </span>
           </div>
-          <h2 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             Subsurface Temperature Reconstruction &amp; GLORYS Reference
           </h2>
           <p className="text-xs text-slate-600 mt-0.5">
@@ -68,7 +68,7 @@ export const PredictionComparisonView: React.FC<PredictionComparisonViewProps> =
           {/* VIEW IN 3D per requirement #12 */}
           <button
             onClick={handleViewIn3D}
-            className="flex items-center gap-2 px-4 py-2 bg-[#0B3A82] hover:bg-[#082C64] active:bg-[#051C40] text-white text-xs font-bold uppercase tracking-wider rounded-none border border-[#0B3A82] transition-colors cursor-pointer shadow-sm"
+            className="flex items-center gap-2 px-3.5 sm:px-4 py-2 bg-[#0B3A82] hover:bg-[#082C64] active:bg-[#051C40] text-white text-xs font-bold uppercase tracking-wider rounded-none border border-[#0B3A82] transition-colors cursor-pointer shadow-sm"
             title="Inspect reconstructed subsurface layers in 3D"
           >
             <Box className="w-4 h-4" />
@@ -79,7 +79,7 @@ export const PredictionComparisonView: React.FC<PredictionComparisonViewProps> =
           {onOpenReport && (
             <button
               onClick={onOpenReport}
-              className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-[#F0F5FC] text-[#0B3A82] text-xs font-bold uppercase tracking-wider rounded-none border-2 border-[#0B3A82] transition-colors cursor-pointer shadow-sm"
+              className="flex items-center gap-2 px-3.5 sm:px-4 py-2 bg-white hover:bg-[#F0F5FC] text-[#0B3A82] text-xs font-bold uppercase tracking-wider rounded-none border-2 border-[#0B3A82] transition-colors cursor-pointer shadow-sm"
               title="Generate scientific observation report"
             >
               <FileText className="w-4 h-4 text-[#0B3A82]" />
@@ -87,40 +87,40 @@ export const PredictionComparisonView: React.FC<PredictionComparisonViewProps> =
             </button>
           )}
 
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F0F5FC] border border-[#CBDDF3] text-xs text-[#0B3A82] font-semibold">
-            <ShieldCheck className="w-4 h-4 text-[#0B3A82]" />
+          <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#F0F5FC] border border-[#CBDDF3] text-xs text-[#0B3A82] font-semibold">
+            <ShieldCheck className="w-4 h-4 text-[#0B3A82] shrink-0" />
             <span>GLORYS Reference — Demo Data</span>
           </div>
         </div>
       </div>
 
       {/* Summary Metrics Bar - Strict Blue and White */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 my-5">
-        <div className="border border-slate-200 p-3.5 bg-white">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 my-4 sm:my-5">
+        <div className="border border-slate-200 p-3 sm:p-3.5 bg-white">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-1">Surface Temperature (0m)</span>
-          <span className="text-2xl font-black text-slate-900 font-mono">{predictions[0]?.predicted_temperature.toFixed(2)} °C</span>
+          <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono">{predictions[0]?.predicted_temperature.toFixed(2)} °C</span>
           <span className="text-[10px] text-[#0B3A82] font-semibold block mt-1">Observed SST Anchor</span>
         </div>
 
-        <div className="border border-slate-200 p-3.5 bg-[#F0F5FC]">
+        <div className="border border-slate-200 p-3 sm:p-3.5 bg-[#F0F5FC]">
           <span className="text-[10px] font-bold uppercase tracking-wider text-[#0B3A82] block mb-1">Thermocline Layer (100m)</span>
-          <span className="text-2xl font-black text-[#0B3A82] font-mono">
+          <span className="text-xl sm:text-2xl font-black text-[#0B3A82] font-mono">
             {predictions.find(p => p.depth === 100)?.predicted_temperature.toFixed(2)} °C
           </span>
           <span className="text-[10px] text-slate-600 block mt-1 font-mono">
-            Δ {(predictions.find(p => p.depth === 100)?.difference ?? 0) > 0 ? '+' : ''}{(predictions.find(p => p.depth === 100)?.difference ?? 0).toFixed(2)}°C vs Reference
+            Δ {(predictions.find(p => p.depth === 100)?.difference ?? 0) > 0 ? '+' : ''}{(predictions.find(p => p.depth === 100)?.difference ?? 0).toFixed(2)}°C vs Ref
           </span>
         </div>
 
-        <div className="border border-slate-200 p-3.5 bg-white">
+        <div className="border border-slate-200 p-3 sm:p-3.5 bg-white">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-1">Deep Ocean (1000m)</span>
-          <span className="text-2xl font-black text-slate-900 font-mono">{predictions.at(-1)?.predicted_temperature.toFixed(2)} °C</span>
+          <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono">{predictions.at(-1)?.predicted_temperature.toFixed(2)} °C</span>
           <span className="text-[10px] text-slate-500 block mt-1">Abyssal Stability Floor</span>
         </div>
 
-        <div className="border border-slate-200 p-3.5 bg-white">
+        <div className="border border-slate-200 p-3 sm:p-3.5 bg-white">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-1">Mean Absolute Error (MAE)</span>
-          <span className="text-2xl font-black text-slate-900 font-mono">{validation_metrics?.mae.toFixed(2) ?? '0.18'} °C</span>
+          <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono">{validation_metrics?.mae.toFixed(2) ?? '0.18'} °C</span>
           <span className="text-[10px] text-[#0B3A82] font-semibold block mt-1">RMSE: {validation_metrics?.rmse.toFixed(2) ?? '0.24'}°C</span>
         </div>
       </div>
@@ -128,15 +128,15 @@ export const PredictionComparisonView: React.FC<PredictionComparisonViewProps> =
       {/* Main Row: Temperature Profile Chart + Prediction vs GLORYS Table */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Line Graph (Blue Lines Only) */}
-        <div className="lg:col-span-6 border border-slate-200 p-4 bg-white">
-          <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
+        <div className="lg:col-span-6 border border-slate-200 p-3.5 sm:p-4 bg-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 border-b border-slate-200 pb-2 gap-2">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-[#0B3A82]" />
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                 Subsurface Temperature Profile (0m to 1000m)
               </h3>
             </div>
-            <div className="flex items-center gap-4 text-xs font-mono">
+            <div className="flex items-center gap-3 text-xs font-mono shrink-0">
               <span className="flex items-center gap-1.5 text-[#0B3A82] font-bold">
                 <span className="w-3.5 h-1 bg-[#0B3A82] inline-block" /> OceanEmbed
               </span>
@@ -146,12 +146,12 @@ export const PredictionComparisonView: React.FC<PredictionComparisonViewProps> =
             </div>
           </div>
 
-          <div className="h-[370px] w-full">
+          <div className="h-[280px] sm:h-[370px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 layout="vertical"
                 data={chartData}
-                margin={{ top: 10, right: 30, left: 10, bottom: 20 }}
+                margin={{ top: 10, right: 20, left: -10, bottom: 20 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis

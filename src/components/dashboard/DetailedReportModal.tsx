@@ -36,24 +36,25 @@ export const DetailedReportModal: React.FC<DetailedReportModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[2000] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-      <div className="bg-white border-2 border-[#0B3A82] w-full max-w-4xl my-auto shadow-2xl rounded-none text-slate-900 font-sans max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-[2000] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-6 overflow-y-auto">
+      <div className="bg-white border-2 border-[#0B3A82] w-full max-w-4xl my-auto shadow-2xl rounded-none text-slate-900 font-sans max-h-[95vh] sm:max-h-[92vh] flex flex-col">
         {/* Modal Toolbar - Pure OceanEmbed Blue */}
-        <div className="bg-[#0B3A82] text-white px-6 py-3.5 flex items-center justify-between border-b-2 border-[#082C64] shrink-0">
-          <div className="flex items-center gap-2.5">
-            <FileText className="w-5 h-5 text-blue-200" />
-            <span className="font-bold text-sm tracking-wide uppercase">
-              OceanEmbed Observation &amp; Reconstruction Report
+        <div className="bg-[#0B3A82] text-white px-3.5 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between border-b-2 border-[#082C64] shrink-0 gap-2">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-blue-200 shrink-0" />
+            <span className="font-bold text-xs sm:text-sm tracking-wide uppercase line-clamp-1">
+              OceanEmbed Observation Report
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-[#F0F5FC] text-[#0B3A82] text-xs font-bold transition-colors cursor-pointer rounded-none border border-white"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 bg-white hover:bg-[#F0F5FC] text-[#0B3A82] text-[11px] sm:text-xs font-bold transition-colors cursor-pointer rounded-none border border-white"
             >
               <Printer className="w-3.5 h-3.5 text-[#0B3A82]" />
-              <span>PRINT / SAVE PDF</span>
+              <span className="hidden sm:inline">PRINT / SAVE PDF</span>
+              <span className="sm:hidden">PDF</span>
             </button>
             <button
               onClick={onClose}
@@ -66,7 +67,7 @@ export const DetailedReportModal: React.FC<DetailedReportModalProps> = ({
         </div>
 
         {/* Printable Document Body */}
-        <div className="p-8 overflow-y-auto space-y-7 bg-white print:p-0">
+        <div className="p-4 sm:p-8 overflow-y-auto space-y-5 sm:space-y-7 bg-white print:p-0">
           {/* Document Header */}
           <div className="border-b-2 border-slate-900 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <div>
@@ -172,8 +173,8 @@ export const DetailedReportModal: React.FC<DetailedReportModalProps> = ({
             <h2 className="text-xs font-bold uppercase tracking-wider text-[#0B3A82] border-b border-slate-300 pb-1 mb-3">
               3. Vertical Profile Reconstruction Data (0m to 1000m)
             </h2>
-            <div className="border border-slate-300">
-              <table className="w-full text-left text-xs font-mono">
+            <div className="border border-slate-300 overflow-x-auto">
+              <table className="w-full text-left text-xs font-mono min-w-[480px]">
                 <thead className="bg-[#F0F5FC] text-slate-800 text-[11px] uppercase border-b border-slate-300">
                   <tr>
                     <th className="px-4 py-2 font-bold font-sans">Depth Level</th>

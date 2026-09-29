@@ -127,3 +127,12 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   }
 }
 
+/* Scrollbar Hide Utilities for Mobile Horizontal Strips */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
