@@ -147,7 +147,7 @@ export interface PotentialHabitatPoint {
 export interface HabitatPolygonArea {
   id: string;
   name: string;
-  category: 'High' | 'Moderate';
+  category: 'High' | 'Moderate' | 'Low';
   avgSuitability: number;
   avgTemp: number;
   depth: number;

@@ -34,7 +34,6 @@ const DEPTH_OPTIONS = [
 export const FisheriesMap: React.FC<FisheriesMapProps> = ({
   species,
   areas,
-  summary,
   selectedDepth,
   onDepthChange,
   selectedDate,
