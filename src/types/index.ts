@@ -19,8 +19,18 @@ export interface SurfaceParameters {
 export interface DepthPrediction {
   depth: number; // meters
   predicted_temperature: number; // Celsius
+  glorys_reference?: number; // Simulated GLORYS Reference (Demo)
+  difference?: number; // predicted_temperature - glorys_reference
   lower_bound: number;
   upper_bound: number;
+}
+
+export interface ValidationMetrics {
+  mae: number;
+  rmse: number;
+  meanBias: number;
+  correlation: number;
+  r2: number;
 }
 
 export interface PredictionResponse {
@@ -32,6 +42,7 @@ export interface PredictionResponse {
   surface_parameters: SurfaceParameters;
   predictions: DepthPrediction[];
   correlations: CorrelationResult[];
+  validation_metrics?: ValidationMetrics;
   /** Demonstration-only model confidence; not scientifically validated. */
   demo_confidence: number;
   model_status: "DEMO";

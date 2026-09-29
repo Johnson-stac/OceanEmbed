@@ -8,17 +8,17 @@ export default {
     extend: {
       colors: {
         ocean: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-          950: '#082f49',
+          50: '#F0F5FC',
+          100: '#E1EDFB',
+          200: '#C3DCF7',
+          300: '#94C0F2',
+          400: '#5A9BEB',
+          500: '#2E78E0',
+          600: '#155BBD',
+          700: '#0B3A82', // Primary OceanEmbed Blue
+          800: '#082C64', // Darker Blue / Hover
+          900: '#051C40', // Deep Navy Blue
+          950: '#030E20',
         }
       },
       fontFamily: {

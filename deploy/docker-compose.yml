@@ -1,0 +1,25 @@
+services:
+  oceanembed:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: oceanembed-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ../.env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Mount a volume for future model weights (persistent across deploys)
+      - model-data:/app/models
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  model-data:
+    driver: local

@@ -3,21 +3,22 @@ interface QuickQuestionsProps {
 }
 
 const QUESTIONS = [
-  "Summarize this location",
-  "Explain the temperature profile",
-  "Which depth changes the most?",
-  "What does this profile indicate?",
-  "Explain the surface observations"
+  "Summarize this ocean location",
+  "Explain the subsurface temperature profile",
+  "Where is the sharpest thermocline gradient?",
+  "How does SST relate to subsurface temperature?",
+  "What do current vectors indicate here?",
+  "Which fish species thrive in this thermal window?"
 ];
 
 export function QuickQuestions({ onSelect }: QuickQuestionsProps) {
   return (
-    <div className="flex flex-wrap gap-2 mt-4 mb-2">
+    <div className="flex flex-wrap gap-1.5 mt-3 mb-2">
       {QUESTIONS.map((q, idx) => (
         <button
           key={idx}
           onClick={() => onSelect(q)}
-          className="text-xs font-medium px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-full hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50 transition-colors text-left"
+          className="text-[11px] font-medium px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-full hover:border-[#0B3A82] dark:hover:border-blue-400 hover:text-[#0B3A82] dark:hover:text-blue-300 hover:bg-[#F0F5FC] dark:hover:bg-slate-750 transition-all text-left cursor-pointer shadow-xs"
         >
           {q}
         </button>

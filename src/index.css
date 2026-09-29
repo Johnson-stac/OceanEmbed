@@ -1,14 +1,129 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
-:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #fff; font-synthesis: none; text-rendering: optimizeLegibility; }
-* { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; background: #fff; }
-button, input { font: inherit; }
-button:focus-visible, input:focus-visible { outline: 2px solid #0284c7; outline-offset: 2px; }
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+  background-color: #ffffff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  color-scheme: light dark;
+}
+
+.dark:root,
+html.dark {
+  color: #f1f5f9;
+  background-color: #0a1628;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background-color: #ffffff;
+  color: #0f172a;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark {
+  background-color: #0a1628;
+  color: #f1f5f9;
+}
+
+
+/* Sharp Scientific Instrument Aesthetic - Default rounded-none */
+button, input, select, textarea {
+  font: inherit;
+  border-radius: 0;
+}
+
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 1px;
+}
+
+/* Crisp Clean Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Cesium Globe Customizations */
 .cesium-globe .cesium-viewer,
 .cesium-globe .cesium-widget,
-.cesium-globe canvas { width: 100%; height: 100%; }
+.cesium-globe canvas {
+  width: 100%;
+  height: 100%;
+}
+
 .cesium-globe .cesium-viewer-toolbar,
 .cesium-globe .cesium-viewer-animationContainer,
-.cesium-globe .cesium-viewer-timelineContainer { display: none; }
+.cesium-globe .cesium-viewer-timelineContainer {
+  display: none;
+}
+
+/* Dedicated Scientific Report Print Styles */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt;
+  }
+
+  header,
+  nav,
+  button,
+  .print-hide,
+  .z-\[1100\],
+  .fixed.bottom-6.right-6 {
+    display: none !important;
+  }
+
+  .print-only-report {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 1.5cm;
+  }
+}
+

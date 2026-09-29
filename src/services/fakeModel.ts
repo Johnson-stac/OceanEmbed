@@ -147,17 +147,96 @@ export const getDepthTemperature = (sst: number, depth: number): number => {
   return Math.max(3.5, sst - drop);
 };
 
-export const generateMockDepthProfile = (surfaceTemp: number): DepthPrediction[] => {
+export const calculateValidationMetrics = (predictions: DepthPrediction[]): {
+  mae: number;
+  rmse: number;
+  meanBias: number;
+  correlation: number;
+  r2: number;
+} => {
+  const valid = predictions.filter(p => p.glorys_reference !== undefined);
+  if (valid.length === 0) {
+    return { mae: 0.18, rmse: 0.24, meanBias: -0.04, correlation: 0.98, r2: 0.96 };
+  }
+
+  const n = valid.length;
+  const preds = valid.map(p => p.predicted_temperature);
+  const refs = valid.map(p => p.glorys_reference!);
+
+  const diffs = preds.map((p, i) => p - refs[i]);
+  const absDiffs = diffs.map(d => Math.abs(d));
+  const sqDiffs = diffs.map(d => d * d);
+
+  const mae = absDiffs.reduce((a, b) => a + b, 0) / n;
+  const rmse = Math.sqrt(sqDiffs.reduce((a, b) => a + b, 0) / n);
+  const meanBias = diffs.reduce((a, b) => a + b, 0) / n;
+
+  // Correlation & R2
+  const meanPred = preds.reduce((a, b) => a + b, 0) / n;
+  const meanRef = refs.reduce((a, b) => a + b, 0) / n;
+
+  let num = 0;
+  let denPred = 0;
+  let denRef = 0;
+  let ssTot = 0;
+  let ssRes = 0;
+
+  for (let i = 0; i < n; i++) {
+    const dp = preds[i] - meanPred;
+    const dr = refs[i] - meanRef;
+    num += dp * dr;
+    denPred += dp * dp;
+    denRef += dr * dr;
+    ssTot += Math.pow(refs[i] - meanRef, 2);
+    ssRes += Math.pow(refs[i] - preds[i], 2);
+  }
+
+  const correlation = denPred * denRef > 0 ? num / Math.sqrt(denPred * denRef) : 0.98;
+  const r2 = ssTot > 0 ? Math.max(0, 1 - (ssRes / ssTot)) : 0.96;
+
+  return {
+    mae: Number(mae.toFixed(2)),
+    rmse: Number(rmse.toFixed(2)),
+    meanBias: Number(meanBias.toFixed(2)),
+    correlation: Number(correlation.toFixed(3)),
+    r2: Number(r2.toFixed(3)),
+  };
+};
+
+export const generateMockDepthProfile = (
+  surfaceTemp: number,
+  lat = 15,
+  lng = 75,
+  dateStr?: string
+): DepthPrediction[] => {
   const depths = [0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000];
+  const d = dateStr ? new Date(dateStr) : new Date(Date.UTC(2022, 5, 15));
+  const dayOfYear = getDayOfYear(d);
+
   return depths.map((depth, index) => {
-    const temp = getDepthTemperature(surfaceTemp, depth);
-    const uncertainty = 0.15 + (index * 0.12);
+    // 1. Physically sensible base temperature
+    const baseTemp = getDepthTemperature(surfaceTemp, depth);
+
+    // 2. Deterministic spatial & temporal micro-perturbation (no randomness)
+    const spatialPerturbation = Math.sin((lat * 0.45) + (lng * 0.35) + (depth * 0.008) + (dayOfYear * 0.015)) * 0.08;
+    const predicted = Math.max(3.8, Number((baseTemp + spatialPerturbation).toFixed(2)));
+
+    // 3. Simulated GLORYS Reference data (deterministic offset)
+    // Thermocline depth (100-200m) naturally has slightly higher model-reference delta
+    const thermoclineEmphasis = depth >= 75 && depth <= 200 ? 1.6 : 0.9;
+    const delta = Math.sin((depth * 0.02) + (lat * 0.5) - (lng * 0.2)) * 0.16 * thermoclineEmphasis - 0.03;
+    const glorys = Math.max(3.6, Number((predicted - delta).toFixed(2)));
+    const difference = Number((predicted - glorys).toFixed(2));
+
+    const uncertainty = Number((0.12 + (index * 0.06)).toFixed(2));
 
     return {
       depth,
-      predicted_temperature: Number(temp.toFixed(2)),
-      lower_bound: Number((temp - uncertainty).toFixed(2)),
-      upper_bound: Number((temp + uncertainty).toFixed(2)),
+      predicted_temperature: predicted,
+      glorys_reference: glorys,
+      difference,
+      lower_bound: Number((predicted - uncertainty).toFixed(2)),
+      upper_bound: Number((predicted + uncertainty).toFixed(2)),
     };
   });
 };
@@ -176,8 +255,9 @@ const generateMockCorrelations = (): CorrelationResult[] => {
 
 export const runFakeInference = (lat: number, lng: number, date: string): PredictionResponse => {
   const surface_parameters = generateMockSurfaceParameters(lat, lng, date);
-  const predictions = generateMockDepthProfile(surface_parameters.sst);
+  const predictions = generateMockDepthProfile(surface_parameters.sst, lat, lng, date);
   const correlations = generateMockCorrelations();
+  const validation_metrics = calculateValidationMetrics(predictions);
 
   return {
     location: { lat, lng },
@@ -185,7 +265,8 @@ export const runFakeInference = (lat: number, lng: number, date: string): Predic
     surface_parameters,
     predictions,
     correlations,
-    demo_confidence: 89,
+    validation_metrics,
+    demo_confidence: 91,
     model_status: "DEMO"
   };
 };

@@ -1,99 +1,138 @@
 import React from 'react';
 import type { PredictionResponse } from '../../types';
 import type { MockSpecies } from '../../data/mockSpecies';
+import type { PotentialHabitatPoint } from '../../services/habitatAnalysis';
 import { generateMockDepthProfile } from '../../services/fakeModel';
-import { 
-  ComposedChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  ComposedChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
-  ReferenceArea
+  ReferenceArea,
 } from 'recharts';
 
 interface TemperatureDepthChartProps {
   predictionData: PredictionResponse | null;
   species: MockSpecies;
+  selectedPoint?: PotentialHabitatPoint | null;
 }
 
-export const TemperatureDepthChart: React.FC<TemperatureDepthChartProps> = ({ predictionData, species }) => {
-  const predictions = predictionData?.predictions || generateMockDepthProfile(28.5);
+export const TemperatureDepthChart: React.FC<TemperatureDepthChartProps> = ({
+  predictionData,
+  species,
+  selectedPoint,
+}) => {
+  const baseSst = selectedPoint ? selectedPoint.temp : 28.2;
+  const predictions = predictionData?.predictions || generateMockDepthProfile(baseSst);
 
-  const data = predictions.map(p => ({
+  const data = predictions.map((p) => ({
     depth: p.depth,
-    temperature: Number(p.predicted_temperature.toFixed(2))
+    temperature: Number(p.predicted_temperature.toFixed(2)),
   }));
 
-  const minTempInData = Math.min(...data.map(d => d.temperature));
-  const maxTempInData = Math.max(...data.map(d => d.temperature));
-  
+  const minTempInData = Math.min(...data.map((d) => d.temperature));
+  const maxTempInData = Math.max(...data.map((d) => d.temperature));
+
   const xDomainMin = Math.floor(Math.min(minTempInData, species.minTemp) - 2);
   const xDomainMax = Math.ceil(Math.max(maxTempInData, species.maxTemp) + 2);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 h-full flex flex-col justify-between">
+    <div className="bg-white border-2 border-slate-300 rounded-none p-5 h-full flex flex-col justify-between shadow-none">
       <div>
-        <div className="mb-4 pb-3 border-b border-slate-100 flex items-center justify-between">
+        <div className="mb-4 pb-3 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Vertical Thermal Envelope</h3>
-            <p className="text-xs text-slate-500 mt-0.5">{species.name} thermal window across depth layers</p>
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+              Vertical Thermal Profile vs Species Window
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {selectedPoint
+                ? `Location: ${selectedPoint.lat.toFixed(1)}°N, ${selectedPoint.lng.toFixed(1)}°E (${selectedPoint.regionName})`
+                : `${species.name} thermal envelope across reconstructed depths`}
+            </p>
           </div>
-          <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200">
+          <span className="text-[10px] font-bold uppercase tracking-wider bg-[#F0F5FC] text-[#0B3A82] px-2.5 py-1 rounded-none border border-[#CBDDF3] self-start sm:self-auto font-mono">
             {species.minTemp}°C – {species.maxTemp}°C Window
           </span>
         </div>
 
-        <div className="h-[340px] w-full">
+        <div className="h-[310px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={data} layout="vertical" margin={{ top: 20, right: 20, bottom: 20, left: 10 }}>
+            <ComposedChart
+              data={data}
+              layout="vertical"
+              margin={{ top: 20, right: 20, bottom: 20, left: 10 }}
+            >
               <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={true} stroke="#e2e8f0" />
-              
-              <XAxis 
-                type="number" 
-                dataKey="temperature" 
+
+              <XAxis
+                type="number"
+                dataKey="temperature"
                 domain={[xDomainMin, xDomainMax]}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 11, fill: '#64748b' }}
-                label={{ value: 'Temperature (°C)', position: 'top', offset: 0, fontSize: 11, fill: '#64748b' }}
+                axisLine={true}
+                tickLine={true}
+                stroke="#64748b"
+                tick={{ fontSize: 10, fill: '#475569' }}
+                label={{
+                  value: 'Temperature (°C)',
+                  position: 'top',
+                  offset: 0,
+                  fontSize: 10,
+                  fill: '#0B3A82',
+                  fontWeight: 600,
+                }}
                 orientation="top"
               />
-              
-              <YAxis 
-                type="number" 
-                dataKey="depth" 
-                reversed={true} 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 11, fill: '#64748b' }}
-                label={{ value: 'Depth (m)', angle: -90, position: 'left', offset: 0, fontSize: 11, fill: '#64748b' }}
+
+              <YAxis
+                type="number"
+                dataKey="depth"
+                reversed={true}
+                axisLine={true}
+                tickLine={true}
+                stroke="#64748b"
+                tick={{ fontSize: 10, fill: '#475569' }}
+                label={{
+                  value: 'Depth (m)',
+                  angle: -90,
+                  position: 'left',
+                  offset: 0,
+                  fontSize: 10,
+                  fill: '#0B3A82',
+                  fontWeight: 600,
+                }}
               />
-              
-              <Tooltip 
-                contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                itemStyle={{ fontSize: '12px', fontWeight: 600, color: '#4f46e5' }}
+
+              <Tooltip
+                contentStyle={{
+                  borderRadius: '0px',
+                  border: '1px solid #0B3A82',
+                  boxShadow: 'none',
+                  backgroundColor: '#ffffff',
+                }}
+                itemStyle={{ fontSize: '11px', fontWeight: 600, color: '#0B3A82' }}
                 labelStyle={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}
                 formatter={(value: any) => [`${value}°C`, 'Subsurface Temp']}
                 labelFormatter={(label) => `Depth: ${label}m`}
               />
 
-              {/* Thermal Preference Band */}
-              <ReferenceArea 
-                x1={species.minTemp} 
-                x2={species.maxTemp} 
-                fill="#10b981" 
-                fillOpacity={0.18} 
+              {/* Thermal Preference Band in Soft Blue Tint */}
+              <ReferenceArea
+                x1={species.minTemp}
+                x2={species.maxTemp}
+                fill="#C3DCF7"
+                fillOpacity={0.4}
               />
 
-              <Line 
-                type="monotone" 
-                dataKey="temperature" 
-                stroke="#4f46e5" 
+              <Line
+                type="monotone"
+                dataKey="temperature"
+                stroke="#0B3A82"
                 strokeWidth={3}
-                dot={{ r: 4, fill: '#4f46e5', strokeWidth: 0 }}
-                activeDot={{ r: 6, fill: '#3730a3', strokeWidth: 0 }}
+                dot={{ r: 3.5, fill: '#0B3A82', strokeWidth: 0 }}
+                activeDot={{ r: 5, fill: '#082C64', strokeWidth: 0 }}
                 isAnimationActive={false}
               />
             </ComposedChart>
@@ -101,14 +140,16 @@ export const TemperatureDepthChart: React.FC<TemperatureDepthChartProps> = ({ pr
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-6 pt-3 border-t border-slate-100">
+      <div className="flex flex-wrap items-center justify-center gap-5 pt-3 border-t border-slate-200">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-[#4f46e5]"></div>
-          <span className="text-xs text-slate-600 font-medium">Subsurface Temp Profile</span>
+          <div className="w-3.5 h-1 bg-[#0B3A82]"></div>
+          <span className="text-[11px] text-slate-700 font-semibold">Reconstructed Profile</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-[#10b981] opacity-25 border border-[#10b981]"></div>
-          <span className="text-xs text-slate-600 font-medium">{species.name} Range ({species.minTemp}-{species.maxTemp}°C)</span>
+          <div className="w-3.5 h-3 bg-[#C3DCF7] border border-[#94C0F2]"></div>
+          <span className="text-[11px] text-slate-700 font-semibold">
+            {species.name} Preference ({species.minTemp}°C–{species.maxTemp}°C)
+          </span>
         </div>
       </div>
     </div>

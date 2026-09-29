@@ -5,104 +5,130 @@ import { SpeciesSelector } from '../components/fisheries/SpeciesSelector';
 import { HabitatSummary } from '../components/fisheries/HabitatSummary';
 import { TemperatureDepthChart } from '../components/fisheries/TemperatureDepthChart';
 import { FisheriesInsight } from '../components/fisheries/FisheriesInsight';
+import { DataSourcesPanel } from '../components/fisheries/DataSourcesPanel';
 import { mockSpecies } from '../data/mockSpecies';
-import { generateSpatialHabitatGrid } from '../services/habitatAnalysis';
-import { Fish, ShieldCheck, Compass } from 'lucide-react';
+import {
+  generateSpatialHabitatGrid,
+  type PotentialHabitatPoint,
+} from '../services/habitatAnalysis';
+import { Fish, Calendar, CheckSquare } from 'lucide-react';
 
 export default function FisheriesPage() {
   const [selectedSpeciesId, setSelectedSpeciesId] = useState<string>(mockSpecies[0].id);
   const [selectedDepth, setSelectedDepth] = useState<number>(0);
+  const [selectedDate, setSelectedDate] = useState<string>('2022-05-15');
+  const [selectedPoint, setSelectedPoint] = useState<PotentialHabitatPoint | null>(null);
 
   const selectedSpecies = useMemo(
-    () => mockSpecies.find(s => s.id === selectedSpeciesId) || mockSpecies[0],
+    () => mockSpecies.find((s) => s.id === selectedSpeciesId) || mockSpecies[0],
     [selectedSpeciesId]
   );
 
-  // Compute spatial habitat suitability grid across the North Indian Ocean for the selected species & depth
+  // Compute discrete spatial potential habitat points strictly masked to ocean waters
   const spatialData = useMemo(
-    () => generateSpatialHabitatGrid(selectedSpecies, selectedDepth),
-    [selectedSpecies, selectedDepth]
+    () => generateSpatialHabitatGrid(selectedSpecies, selectedDepth, 1.0, selectedDate),
+    [selectedSpecies, selectedDepth, selectedDate]
   );
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans text-slate-900 pb-20">
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans select-none">
       <Header />
 
-      <main className="flex-grow max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex flex-col gap-6">
-        
-        {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-          <div>
-            <div className="flex items-center gap-3 mb-1">
-              <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100">
-                <Fish className="w-5 h-5" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                  Fisheries Intelligence & Spatial Habitat Modeling
-                </h1>
-                <p className="text-xs text-slate-500 font-medium">
-                  Select a marine species to dynamically project thermal suitability hotspots across the North Indian Ocean.
-                </p>
-              </div>
+      <main className="flex-grow max-w-7xl xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full flex flex-col gap-5">
+        {/* Page Top Context Bar - Sharp rectangular scientific banner */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white border border-slate-300 p-4 rounded-none">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-[#F0F5FC] text-[#0B3A82] border border-[#CBDDF3] rounded-none shrink-0">
+              <Fish className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-slate-900 tracking-tight uppercase">
+                Fisheries Intelligence &amp; Thermal Habitat Modeling
+              </h1>
+              <p className="text-xs text-slate-600 font-medium">
+                Ocean-masked potential thermal habitat points derived from OceanEmbed subsurface temperature reconstruction.
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs text-slate-700 font-semibold shadow-sm">
-              <Compass className="w-4 h-4 text-indigo-600" />
-              <span>North Indian Ocean (5°N–28°N, 60°E–98°E)</span>
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            <div className="flex items-center gap-1.5 bg-white border border-slate-300 px-3 py-1.5 text-xs text-slate-800 font-mono rounded-none">
+              <Calendar className="w-3.5 h-3.5 text-[#0B3A82]" />
+              <input
+                type="date"
+                value={selectedDate}
+                min="2018-01-01"
+                max="2024-12-31"
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="bg-transparent text-slate-800 focus:outline-none cursor-pointer"
+              />
             </div>
-            <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Species-Driven AI Projection</span>
+            <div className="flex items-center gap-1.5 bg-[#F0F5FC] text-[#0B3A82] border border-[#CBDDF3] px-3 py-1.5 text-xs font-bold rounded-none">
+              <CheckSquare className="w-3.5 h-3.5 text-[#0B3A82]" />
+              <span>Potential Thermal Habitat</span>
             </div>
           </div>
         </div>
 
-        {/* Primary 2-Column Map & Species Selector Layout (Compact 460px height) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_380px] gap-6 h-[460px] lg:h-[480px]">
-          {/* Spatial Heatmap Overlay Map */}
+        {/* Primary 2-Column: Dominant Rectangular Map & Species Profile Selector */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-5 min-h-[580px] lg:h-[620px]">
+          {/* Rectangular Ocean Map (Dominant, sharp corners, no generic heatmap) */}
           <div className="h-full w-full">
             <FisheriesMap
               species={selectedSpecies}
-              gridCells={spatialData.cells}
+              points={spatialData.points}
+              areas={spatialData.areas}
               summary={spatialData.summary}
               selectedDepth={selectedDepth}
               onDepthChange={setSelectedDepth}
+              selectedDate={selectedDate}
+              selectedPoint={selectedPoint}
+              onSelectPoint={setSelectedPoint}
             />
           </div>
 
-          {/* Interactive Species Selector */}
-          <div className="h-full overflow-hidden">
+          {/* Species Selector */}
+          <div className="h-full">
             <SpeciesSelector
               speciesList={mockSpecies}
               selectedSpeciesId={selectedSpeciesId}
-              onSelectSpecies={setSelectedSpeciesId}
+              onSelectSpecies={(id) => {
+                setSelectedSpeciesId(id);
+                setSelectedPoint(null);
+              }}
             />
           </div>
         </div>
 
-        {/* Spatial Habitat Metrics Summary Banner */}
+        {/* Regional Habitat Metrics Summary */}
         <div className="w-full">
           <HabitatSummary summary={spatialData.summary} />
         </div>
 
-        {/* Bottom Row: Fisheries Insight (Purple Card) & Temperature-Depth Graph */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch w-full min-h-[380px]">
+        {/* Depth Profile Chart & Ecological Intelligence Insight */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch w-full min-h-[360px]">
+          <div className="h-full">
+            <TemperatureDepthChart
+              predictionData={null}
+              species={selectedSpecies}
+              selectedPoint={selectedPoint}
+            />
+          </div>
           <div className="h-full">
             <FisheriesInsight summary={spatialData.summary} species={selectedSpecies} />
           </div>
-          <div className="h-full">
-            <TemperatureDepthChart predictionData={null} species={selectedSpecies} />
-          </div>
         </div>
 
-        {/* Scientific & Operational Disclaimer */}
-        <div className="mt-4 p-4 bg-slate-100/80 rounded-xl border border-slate-200 text-xs text-slate-500 leading-relaxed text-center max-w-5xl mx-auto">
-          <span className="font-bold text-slate-700">Fisheries Notice:</span> Spatial suitability maps are computed using thermal preference Gaussian distributions overlaid on subsurface temperature profiles. Commercial fisheries operation requires multi-variable integration including chlorophyll-a concentration, sea surface height anomalies (SLA), primary productivity, and coastal upwelling indices.
+        {/* Scientific References & Data Provenance */}
+        <div className="w-full">
+          <DataSourcesPanel />
         </div>
 
+        {/* Explicit Data Honesty Disclaimer */}
+        <div className="p-3.5 bg-[#F0F5FC] border border-[#CBDDF3] rounded-none text-xs text-[#0B3A82] leading-relaxed text-center font-medium">
+          <strong>Data Integrity Notice:</strong> Spatial points represent{' '}
+          <strong className="text-[#0B3A82]">Potential Thermal Habitat</strong> derived from OceanEmbed subsurface temperature reconstruction and species physiological tolerance windows. All points are rigorously masked to ocean waters. They indicate environmental temperature compatibility and do not guarantee fish presence or commercial abundance.
+        </div>
       </main>
     </div>
   );

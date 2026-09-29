@@ -7,8 +7,9 @@ export function oceanAnalystPlugin(): Plugin {
     name: 'ocean-analyst-api',
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
-        if (req.url === '/api/ocean-analyst' && req.method === 'POST') {
-          // Parse JSON body manually
+        const isAnalystEndpoint = req.url === '/api/ocean-analyst' || req.url === '/api/chat';
+        if (isAnalystEndpoint && req.method === 'POST') {
+          // Parse JSON body
           let body = '';
           req.on('data', chunk => {
             body += chunk.toString();
@@ -16,43 +17,125 @@ export function oceanAnalystPlugin(): Plugin {
 
           req.on('end', async () => {
             try {
-              const parsedBody = JSON.parse(body);
+              const parsedBody = JSON.parse(body || '{}');
               
-              // Load env dynamically for Vite
+              // Load env dynamically for Vite (checks .env.local and .env)
               const env = loadEnv(
                 server.config.mode,
                 process.cwd(),
                 ''
               );
               
-              const apiKey = env.GROQ_API_KEY;
-              const model = env.GROQ_MODEL || 'llama3-8b-8192';
+              const geminiApiKey = env.GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+              const groqApiKey = env.GROQ_API_KEY || process.env.GROQ_API_KEY;
+              const messages = parsedBody.messages || [];
 
-              if (!apiKey) {
+              if (!geminiApiKey && !groqApiKey) {
                 res.statusCode = 503;
-                res.end(JSON.stringify({ error: 'Groq API key not configured' }));
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ 
+                  error: 'AI Chatbot API key not configured. Add GEMINI_API_KEY or GROQ_API_KEY to your .env.local file.' 
+                }));
                 return;
               }
 
-              const groq = new Groq({ apiKey });
+              // Provider 1: Gemini if configured
+              if (geminiApiKey) {
+                try {
+                  const geminiModel = env.GEMINI_MODEL || process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+                  // Format messages for Gemini API
+                  const systemInstruction = messages.find((m: any) => m.role === 'system')?.content || '';
+                  const contents = messages
+                    .filter((m: any) => m.role !== 'system')
+                    .map((m: any) => ({
+                      role: m.role === 'assistant' ? 'model' : 'user',
+                      parts: [{ text: m.content }]
+                    }));
 
-              const messages = parsedBody.messages || [];
+                  const geminiPayload: any = {
+                    contents,
+                    generationConfig: {
+                      temperature: 0.2,
+                      maxOutputTokens: 1024,
+                    }
+                  };
 
-              const response = await groq.chat.completions.create({
-                messages: messages,
-                model: model,
-                temperature: 0.1, // Keep it scientific
-              });
+                  if (systemInstruction) {
+                    geminiPayload.systemInstruction = {
+                      parts: [{ text: systemInstruction }]
+                    };
+                  }
 
-              res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ 
-                content: response.choices[0]?.message?.content || 'No response generated' 
-              }));
+                  const geminiRes = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiApiKey}`,
+                    {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(geminiPayload)
+                    }
+                  );
 
-            } catch (error) {
-              console.error('Groq API Error:', error);
+                  if (geminiRes.ok) {
+                    const geminiData: any = await geminiRes.json();
+                    const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                      res.setHeader('Content-Type', 'application/json');
+                      res.end(JSON.stringify({ content: text }));
+                      return;
+                    }
+                  } else {
+                    const errData: any = await geminiRes.json().catch(() => ({}));
+                    console.warn('Gemini API returned error, checking if Groq is available as fallback:', errData);
+                    if (!groqApiKey) {
+                      res.statusCode = geminiRes.status;
+                      res.setHeader('Content-Type', 'application/json');
+                      res.end(JSON.stringify({ 
+                        error: errData.error?.message || 'Gemini API call failed' 
+                      }));
+                      return;
+                    }
+                  }
+                } catch (geminiErr: any) {
+                  console.error('Gemini call error:', geminiErr);
+                  if (!groqApiKey) {
+                    res.statusCode = 500;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify({ error: geminiErr.message || 'Gemini processing failed' }));
+                    return;
+                  }
+                }
+              }
+
+              // Provider 2: Groq (if Gemini wasn't used or failed)
+              if (groqApiKey) {
+                // Determine model: if previous model was deprecated llama3-8b-8192, use valid active model
+                let model = env.GROQ_MODEL || process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
+                if (model === 'llama3-8b-8192' || model === 'llama-3-8b-8192') {
+                  model = 'openai/gpt-oss-120b';
+                }
+
+                const groq = new Groq({ apiKey: groqApiKey });
+                const response = await groq.chat.completions.create({
+                  messages: messages.map((m: any) => ({
+                    role: m.role,
+                    content: m.content
+                  })),
+                  model: model,
+                  temperature: 0.1, // Scientific precision
+                });
+
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ 
+                  content: response.choices[0]?.message?.content || 'No response generated' 
+                }));
+                return;
+              }
+
+            } catch (error: any) {
+              console.error('Chatbot API Error:', error);
               res.statusCode = 500;
-              res.end(JSON.stringify({ error: 'Failed to process request' }));
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ error: error.message || 'Failed to process request' }));
             }
           });
         } else {
