@@ -19,7 +19,7 @@ export class LiveOceanAnalyst implements OceanAnalyst {
     const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout
 
     try {
-      const response = await fetch('/api/chat', {
+      let response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,6 +27,18 @@ export class LiveOceanAnalyst implements OceanAnalyst {
         body: JSON.stringify({ messages }),
         signal: controller.signal,
       });
+
+      if (response.status === 404) {
+        // Fallback to legacy endpoint if /api/chat is not mapped
+        response = await fetch('/api/ocean-analyst', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ messages }),
+          signal: controller.signal,
+        });
+      }
 
       clearTimeout(timeoutId);
 
